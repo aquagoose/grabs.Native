@@ -6,10 +6,12 @@
 #include <windows.h>
 #define open LoadLibraryA
 #define load GetProcAddress
+#define LIB_NAME "grabs.Native.dll"
 #else
 #include <dlfcn.h>
 #define open(name) dlopen(name, RTLD_LAZY)
 #define load dlsym
+#define LIB_NAME "./grabs.Native.so"
 #endif
 
 #define GS_IMPLFUNC(Name) PfnGs##Name##Func gs##Name = NULL;
@@ -37,7 +39,7 @@ GS_IMPLFUNC(EndRenderPass)
 
 void gsInit()
 {
-    void* handle = open("/home/aqua/Documents/C#/grabs.Native/grabs.Native/bin/Release/net9.0/linux-x64/publish/grabs.Native.so");
+    void* handle = open(LIB_NAME);
     GS_LOADFUNC(CreateInstance);
     GS_LOADFUNC(DestroyInstance);
     GS_LOADFUNC(InstanceGetBackend);

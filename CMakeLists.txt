@@ -10,6 +10,24 @@ add_library(grabs STATIC
 
 target_include_directories(grabs PUBLIC include)
 
+add_custom_command(
+        TARGET grabs PRE_BUILD
+        COMMAND dotnet publish -c Release --use-current-runtime "${CMAKE_SOURCE_DIR}/grabs.Native/grabs.Native.csproj"
+        VERBATIM
+)
+
+if (WIN32)
+    set(GRABS_SHARED_NAME "grabs.Native.dll")
+else()
+    set(GRABS_SHARED_NAME "grabs.Native.so")
+endif()
+
+add_custom_command(
+        TARGET grabs POST_BUILD
+        COMMAND "${CMAKE_COMMAND}" -E copy "${CMAKE_SOURCE_DIR}/grabs.Native/bin/Release/net9.0/linux-x64/publish/${GRABS_SHARED_NAME}" $<TARGET_FILE_DIR:grabs>
+        VERBATIM
+)
+
 add_executable(grabstest main.cpp)
 target_link_libraries(grabstest PUBLIC grabs)
 target_link_libraries(grabstest PUBLIC SDL2)
