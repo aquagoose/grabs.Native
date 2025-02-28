@@ -5,19 +5,31 @@ namespace grabs.Native;
 
 public static unsafe partial class GrabsNative
 {
-    [UnmanagedCallersOnly(EntryPoint = "gsInstanceCreateDevice")]
-    public static Result InstanceCreateDevice(GCHandle instance, GCHandle surface, Adapter* adapter, GCHandle* pDevice)
+    [UnmanagedCallersOnly(EntryPoint = "gsDestroyDevice")]
+    public static void DestroyDevice(GCHandle device)
     {
-        Instance gInstance = FromHandle<Instance>(instance);
-        Surface gSurface = FromHandle<Surface>(surface);
+        Device gDevice = FromHandle<Device>(device);
+        gDevice.Dispose();
+        device.Free();
+    }
+
+    [UnmanagedCallersOnly(EntryPoint = "gsDeviceCreateSwapchain")]
+    public static Result DeviceCreateSwapchain(GCHandle device, SwapchainInfo* info, GCHandle* pSurface)
+    {
+        Device gDevice = FromHandle<Device>(device);
+
+        Graphics.SwapchainInfo gInfo = new()
+        {
+            Surface = FromHandle<Surface>(info->Surface),
+            Size = info->Size,
+            Format = info->Format,
+            PresentMode = info->PresentMode,
+            NumBuffers = info->NumBuffers
+        };
 
         try
         {
-            Graphics.Adapter? gAdapter = adapter == null
-                ? null
-                : new Graphics.Adapter(adapter->Handle, 0, null, AdapterType.Other, 0);
-
-            *pDevice = ToHandle(gInstance.CreateDevice(gSurface, gAdapter));
+            *pSurface = ToHandle(gDevice.CreateSwapchain(in gInfo));
         }
         catch (Exception)
         {
@@ -25,13 +37,5 @@ public static unsafe partial class GrabsNative
         }
 
         return Result.Ok;
-    }
-
-    [UnmanagedCallersOnly(EntryPoint = "gsDestroyDevice")]
-    public static void DestroyDevice(GCHandle device)
-    {
-        Device gDevice = FromHandle<Device>(device);
-        gDevice.Dispose();
-        device.Free();
     }
 }

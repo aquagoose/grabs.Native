@@ -86,6 +86,18 @@ int main(int argc, char* argv[])
     GsDevice device;
     CHECK_RESULT(gsInstanceCreateDevice(instance, surface, nullptr, &device));
 
+    GsSwapchainInfo swapchainInfo
+    {
+        surface,
+        { 1280, 720 },
+        GS_FORMAT_B8G8R8A8_UNORM,
+        GS_PRESENT_MODE_FIFO,
+        2
+    };
+    GsSwapchain swapchain;
+    CHECK_RESULT(gsDeviceCreateSwapchain(device, &swapchainInfo, &swapchain));
+
+    gsDestroySwapchain(swapchain);
     gsDestroyDevice(device);
     gsDestroySurface(surface);
     gsDestroyInstance(instance);

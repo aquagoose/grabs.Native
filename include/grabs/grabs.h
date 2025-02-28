@@ -18,6 +18,11 @@
 extern "C" {
 #endif
 
+    typedef void* GsInstance;
+    typedef void* GsSurface;
+    typedef void* GsDevice;
+    typedef void* GsSwapchain;
+
     typedef enum
     {
         GS_RESULT_OK,
@@ -25,6 +30,73 @@ extern "C" {
         GS_RESULT_NO_BACKENDS,
         GS_RESULT_DEBUG_LAYERS_NOT_FOUND
     } GsResult;
+
+    typedef enum
+    {
+        GS_FORMAT_UNKNOWN,
+        GS_FORMAT_B5G6R5_UNORM,
+        GS_FORMAT_B5G5R5A1_UNORM,
+        GS_FORMAT_R8_UNORM,
+        GS_FORMAT_R8_UINT,
+        GS_FORMAT_R8_SNORM,
+        GS_FORMAT_R8_SINT,
+        GS_FORMAT_A8_UNORM,
+        GS_FORMAT_R8G8_UNORM,
+        GS_FORMAT_R8G8_UINT,
+        GS_FORMAT_R8G8_SNORM,
+        GS_FORMAT_R8G8_SINT,
+        GS_FORMAT_R8G8B8A8_UNORM,
+        GS_FORMAT_R8G8B8A8_UNORM_SRGB,
+        GS_FORMAT_R8G8B8A8_UINT,
+        GS_FORMAT_R8G8B8A8_SNORM,
+        GS_FORMAT_R8G8B8A8_SINT,
+        GS_FORMAT_B8G8R8A8_UNORM,
+        GS_FORMAT_B8G8R8A8_UNORM_SRGB,
+        GS_FORMAT_R16_FLOAT,
+        GS_FORMAT_D16_UNORM,
+        GS_FORMAT_R16_UNORM,
+        GS_FORMAT_R16_UINT,
+        GS_FORMAT_R16_SNORM,
+        GS_FORMAT_R16_SINT,
+        GS_FORMAT_R16G16_FLOAT,
+        GS_FORMAT_R16G16_UNORM,
+        GS_FORMAT_R16G16_UINT,
+        GS_FORMAT_R16G16_SNORM,
+        GS_FORMAT_R16G16_SINT,
+        GS_FORMAT_R16G16B16A16_FLOAT,
+        GS_FORMAT_R16G16B16A16_UNORM,
+        GS_FORMAT_R16G16B16A16_UINT,
+        GS_FORMAT_R16G16B16A16_SNORM,
+        GS_FORMAT_R16G16B16A16_SINT,
+        GS_FORMAT_R32_FLOAT,
+        GS_FORMAT_R32_UINT,
+        GS_FORMAT_R32_SINT,
+        GS_FORMAT_R32G32_FLOAT,
+        GS_FORMAT_R32G32_UINT,
+        GS_FORMAT_R32G32_SINT,
+        GS_FORMAT_R32G32B32_FLOAT,
+        GS_FORMAT_R32G32B32_UINT,
+        GS_FORMAT_R32G32B32_SINT,
+        GS_FORMAT_R32G32B32A32_FLOAT,
+        GS_FORMAT_R32G32B32A32_UINT,
+        GS_FORMAT_R32G32B32A32_SINT,
+        GS_FORMAT_D24_UNORM_S8_UINT,
+        GS_FORMAT_D32_FLOAT,
+        GS_FORMAT_BC1_UNORM,
+        GS_FORMAT_BC1_UNORM_SRGB,
+        GS_FORMAT_BC2_UNORM,
+        GS_FORMAT_BC2_UNORM_SRGB,
+        GS_FORMAT_BC3_UNORM,
+        GS_FORMAT_BC3_UNORM_SRGB,
+        GS_FORMAT_BC4_UNORM,
+        GS_FORMAT_BC4_SNORM,
+        GS_FORMAT_BC5_UNORM,
+        GS_FORMAT_BC5_SNORM,
+        GS_FORMAT_BC6H_UF16,
+        GS_FORMAT_BC6H_SF16,
+        GS_FORMAT_BC7_UNORM,
+        GS_FORMAT_BC7_UNORM_SRGB
+    } GsFormat;
 
     typedef enum
     {
@@ -41,6 +113,20 @@ extern "C" {
         GS_SURFACE_TYPE_XCB,
         GS_SURFACE_TYPE_WAYLAND
     } GsSurfaceType;
+
+    typedef enum
+    {
+        GS_PRESENT_MODE_IMMEDIATE,
+        GS_PRESENT_MODE_FIFO,
+        GS_PRESENT_MODE_FIFO_RELAXED,
+        GS_PRESENT_MODE_MAILBOX
+    } GsPresentMode;
+
+    typedef struct
+    {
+        uint32_t width;
+        uint32_t height;
+    } GsSize2D;
 
     typedef struct
     {
@@ -86,20 +172,28 @@ extern "C" {
         } window;
     } GsSurfaceInfo;
 
-    typedef void* GsInstance;
-    typedef void* GsSurface;
-    typedef void* GsDevice;
+    typedef struct
+    {
+        GsSurface surface;
+        GsSize2D size;
+        GsFormat format;
+        GsPresentMode presentMode;
+        uint32_t numBuffers;
+    } GsSwapchainInfo;
 
     extern void gsInit();
 
     GS_APIFUNC(CreateInstance, GsResult, GsInstanceInfo *pInfo, GsInstance *pInstance)
-    GS_APIFUNC(DestroyInstance, void, GsInstance instance);
+    GS_APIFUNC(DestroyInstance, void, GsInstance instance)
     GS_APIFUNC(InstanceGetBackend, GsResult, GsInstance instance, const char **pBackend)
-    GS_APIFUNC(InstanceEnumerateAdapters, GsResult, GsInstance instance, uint32_t *pNumAdapters, GsAdapter *pAdapters);
-    GS_APIFUNC(InstanceCreateSurface, GsResult, GsInstance instance, GsSurfaceInfo *pInfo, GsSurface *pSurface);
-    GS_APIFUNC(DestroySurface, void, GsSurface surface);
-    GS_APIFUNC(InstanceCreateDevice, GsResult, GsInstance instance, GsSurface surface, GsAdapter *pAdapter, GsDevice *pDevice);
-    GS_APIFUNC(DestroyDevice, void, GsDevice device);
+    GS_APIFUNC(InstanceEnumerateAdapters, GsResult, GsInstance instance, uint32_t *pNumAdapters, GsAdapter *pAdapters)
+    GS_APIFUNC(InstanceCreateSurface, GsResult, GsInstance instance, GsSurfaceInfo *pInfo, GsSurface *pSurface)
+    GS_APIFUNC(DestroySurface, void, GsSurface surface)
+    GS_APIFUNC(InstanceCreateDevice, GsResult, GsInstance instance, GsSurface surface, GsAdapter *pAdapter, GsDevice *pDevice)
+    GS_APIFUNC(DestroyDevice, void, GsDevice device)
+
+    GS_APIFUNC(DeviceCreateSwapchain, GsResult, GsDevice device, GsSwapchainInfo *pInfo, GsSwapchain *pSwapchain)
+    GS_APIFUNC(DestroySwapchain, void, GsSwapchain swapchain)
 
 #ifdef __cplusplus
 }
