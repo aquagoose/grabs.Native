@@ -13,9 +13,15 @@ public static unsafe partial class GrabsNative
     public static Result CreateInstance(InstanceInfo* info, GCHandle* pInstance)
     {
         GrabsLog.LogMessage += (severity, type, message, file, line) => Console.WriteLine(message);
+
+        Backend backendHint = info->BackendHint;
+        if (backendHint == Backend.Unknown)
+            backendHint = Backend.Vulkan | Backend.D3D11;
         
-        Instance.RegisterBackend<D3D11Backend>();
-        Instance.RegisterBackend<VulkanBackend>();
+        if (backendHint.HasFlag(Backend.D3D11))
+            Instance.RegisterBackend<D3D11Backend>();
+        if (backendHint.HasFlag(Backend.Vulkan))
+            Instance.RegisterBackend<VulkanBackend>();
 
         Graphics.InstanceInfo grabsInfo = new()
         {
@@ -55,12 +61,16 @@ public static unsafe partial class GrabsNative
     }
 
     [UnmanagedCallersOnly(EntryPoint = "gsInstanceGetBackend")]
-    public static Result InstanceGetBackend(GCHandle instance, nint* pBackend)
+    public static Backend InstanceGetBackend(GCHandle instance)
     {
         Instance gInstance = FromHandle<Instance>(instance);
-        *pBackend = Marshal.StringToCoTaskMemAnsi(gInstance.Backend);
 
-        return Result.Ok;
+        if (gInstance.Backend == VulkanBackend.Name)
+            return Backend.Vulkan;
+        if (gInstance.Backend == D3D11Backend.Name)
+            return Backend.D3D11;
+
+        return Backend.Unknown;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "gsInstanceEnumerateAdapters")]

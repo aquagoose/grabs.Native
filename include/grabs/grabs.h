@@ -36,6 +36,13 @@ extern "C" {
 
     typedef enum
     {
+        GS_BACKEND_UNKNOWN = 0,
+        GS_BACKEND_VULKAN = 1 << 0,
+        GS_BACKEND_D3D11 = 1 << 1
+    } GsBackend;
+
+    typedef enum
+    {
         GS_FORMAT_UNKNOWN,
         GS_FORMAT_B5G6R5_UNORM,
         GS_FORMAT_B5G5R5A1_UNORM,
@@ -140,6 +147,7 @@ extern "C" {
     typedef struct
     {
         const char* name;
+        GsBackend backendHint;
         bool debug;
     } GsInstanceInfo;
 
@@ -204,11 +212,13 @@ extern "C" {
     } GsRenderPassInfo;
 
     extern void gsInit();
+    extern const char* gsResultToString(GsResult result);
+    extern const char* gsBackendToString(GsBackend backend);
 
     GS_APIFUNC(CreateInstance, GsResult, GsInstanceInfo *pInfo, GsInstance *pInstance)
     GS_APIFUNC(DestroyInstance, void, GsInstance instance)
 
-    GS_APIFUNC(InstanceGetBackend, GsResult, GsInstance instance, const char **pBackend)
+    GS_APIFUNC(InstanceGetBackend, GsBackend, GsInstance instance)
     GS_APIFUNC(InstanceEnumerateAdapters, GsResult, GsInstance instance, uint32_t *pNumAdapters, GsAdapter *pAdapters)
     GS_APIFUNC(InstanceCreateSurface, GsResult, GsInstance instance, GsSurfaceInfo *pInfo, GsSurface *pSurface)
     GS_APIFUNC(InstanceCreateDevice, GsResult, GsInstance instance, GsSurface surface, GsAdapter *pAdapter, GsDevice *pDevice)

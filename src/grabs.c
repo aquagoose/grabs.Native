@@ -58,3 +58,35 @@ void gsInit()
     GS_LOADFUNC(BeginRenderPass);
     GS_LOADFUNC(EndRenderPass);
 }
+
+const char* gsResultToString(const GsResult result)
+{
+#define STR(x) case GS_RESULT_##x: return #x;
+
+    switch (result)
+    {
+        STR(OK)
+        STR(UNKNOWN_ERROR)
+        STR(NO_BACKENDS)
+        STR(DEBUG_LAYERS_NOT_FOUND)
+        STR(FAILED_TO_PRESENT)
+
+        default:
+            return "UNKNOWN";
+    }
+
+#undef STR
+}
+
+const char* gsBackendToString(const GsBackend backend)
+{
+    switch (backend)
+    {
+        case GS_BACKEND_VULKAN:
+            return "Vulkan";
+        case GS_BACKEND_D3D11:
+            return "D3D11";
+        default:
+            return "Unknown";
+    }
+}

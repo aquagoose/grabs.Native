@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <stdexcept>
+#include <string>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
@@ -10,7 +11,7 @@
 #define CHECK_RESULT(Operation) {\
     GsResult res = Operation;\
     if (res != GS_RESULT_OK)\
-        throw std::runtime_error("grabs operation failed.");\
+        throw std::runtime_error("grabs operation failed: " + std::string(gsResultToString(res)));\
 }
 
 int main(int argc, char* argv[])
@@ -32,16 +33,16 @@ int main(int argc, char* argv[])
     GsInstanceInfo info
     {
         .name = "Test",
+        .backendHint = GS_BACKEND_UNKNOWN,
         .debug = true
     };
 
     GsInstance instance;
     CHECK_RESULT(gsCreateInstance(&info, &instance));
 
-    const char* backend;
-    CHECK_RESULT(gsInstanceGetBackend(instance, &backend));
+    const GsBackend backend = gsInstanceGetBackend(instance);
 
-    std::cout << backend << std::endl;
+    std::cout << gsBackendToString(backend) << std::endl;
 
     uint32_t numAdapters;
     CHECK_RESULT(gsInstanceEnumerateAdapters(instance, &numAdapters, nullptr));
