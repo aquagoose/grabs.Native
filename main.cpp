@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    SDL_Window* window = SDL_CreateWindow("grabs test", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, 0);
+    SDL_Window* window = SDL_CreateWindow("Native GRABS test in C/++!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, 0);
     if (!window)
     {
         std::cout << "Failed to create window: " << SDL_GetError() << std::endl;
@@ -31,8 +31,8 @@ int main(int argc, char* argv[])
 
     GsInstanceInfo info
     {
-        "Test",
-        true
+        .name = "Test",
+        .debug = true
     };
 
     GsInstance instance;
@@ -88,11 +88,11 @@ int main(int argc, char* argv[])
 
     GsSwapchainInfo swapchainInfo
     {
-        surface,
-        { 1280, 720 },
-        GS_FORMAT_B8G8R8A8_UNORM,
-        GS_PRESENT_MODE_FIFO,
-        2
+        .surface = surface,
+        .size = { 800, 600 },
+        .format = GS_FORMAT_B8G8R8A8_UNORM,
+        .presentMode = GS_PRESENT_MODE_FIFO,
+        .numBuffers = 2
     };
     GsSwapchain swapchain;
     CHECK_RESULT(gsDeviceCreateSwapchain(device, &swapchainInfo, &swapchain));
@@ -124,9 +124,25 @@ int main(int argc, char* argv[])
         GsTexture texture;
         CHECK_RESULT(gsSwapchainGetNextTexture(swapchain, &texture));
 
-        CHECK_RESULT(gsCommandListBegin(cl));
+        CHECK_RESULT(gsBeginCommandList(cl));
 
-        gsCommandListEnd(cl);
+        GsColorAttachmentInfo colorAttachment
+        {
+            .texture = texture,
+            .clearColor = { 1.0f, 0.5f, 0.25f, 1.0f },
+            .loadOp = GS_LOAD_OP_CLEAR
+        };
+
+        GsRenderPassInfo passInfo
+        {
+            .numColorAttachments = 1,
+            .pColorAttachments = &colorAttachment
+        };
+
+        gsBeginRenderPass(cl, &passInfo);
+        gsEndRenderPass(cl);
+
+        gsEndCommandList(cl);
 
         CHECK_RESULT(gsDeviceExecuteCommandList(device, cl));
         CHECK_RESULT(gsSwapchainPresent(swapchain));

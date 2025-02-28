@@ -30,8 +30,10 @@ GS_IMPLFUNC(DestroySwapchain)
 GS_IMPLFUNC(SwapchainGetNextTexture)
 GS_IMPLFUNC(SwapchainPresent)
 GS_IMPLFUNC(DestroyCommandList)
-GS_IMPLFUNC(CommandListBegin)
-GS_IMPLFUNC(CommandListEnd)
+GS_IMPLFUNC(BeginCommandList)
+GS_IMPLFUNC(EndCommandList)
+GS_IMPLFUNC(BeginRenderPass)
+GS_IMPLFUNC(EndRenderPass)
 
 void gsInit()
 {
@@ -51,6 +53,8 @@ void gsInit()
     GS_LOADFUNC(SwapchainGetNextTexture);
     GS_LOADFUNC(SwapchainPresent);
     GS_LOADFUNC(DestroyCommandList);
-    GS_LOADFUNC(CommandListBegin);
-    GS_LOADFUNC(CommandListEnd);
+    GS_LOADFUNC(BeginCommandList);
+    GS_LOADFUNC(EndCommandList);
+    GS_LOADFUNC(BeginRenderPass);
+    GS_LOADFUNC(EndRenderPass);
 }

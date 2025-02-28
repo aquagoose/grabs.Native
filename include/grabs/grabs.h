@@ -125,6 +125,12 @@ extern "C" {
         GS_PRESENT_MODE_MAILBOX
     } GsPresentMode;
 
+    typedef enum
+    {
+        GS_LOAD_OP_CLEAR,
+        GS_LOAD_OP_LOAD
+    } GsLoadOp;
+
     typedef struct
     {
         uint32_t width;
@@ -184,6 +190,19 @@ extern "C" {
         uint32_t numBuffers;
     } GsSwapchainInfo;
 
+    typedef struct
+    {
+        GsTexture texture;
+        float clearColor[4];
+        GsLoadOp loadOp;
+    } GsColorAttachmentInfo;
+
+    typedef struct
+    {
+        uint32_t numColorAttachments;
+        GsColorAttachmentInfo* pColorAttachments;
+    } GsRenderPassInfo;
+
     extern void gsInit();
 
     GS_APIFUNC(CreateInstance, GsResult, GsInstanceInfo *pInfo, GsInstance *pInstance)
@@ -199,15 +218,17 @@ extern "C" {
     GS_APIFUNC(DestroyDevice, void, GsDevice device)
     GS_APIFUNC(DeviceCreateSwapchain, GsResult, GsDevice device, GsSwapchainInfo *pInfo, GsSwapchain *pSwapchain)
     GS_APIFUNC(DeviceCreateCommandList, GsResult, GsDevice device, GsCommandList *pCommandList)
-    GS_APIFUNC(DeviceExecuteCommandList, GsResult, GsDevice device, GsCommandList commandList);
+    GS_APIFUNC(DeviceExecuteCommandList, GsResult, GsDevice device, GsCommandList commandList)
 
     GS_APIFUNC(DestroySwapchain, void, GsSwapchain swapchain)
-    GS_APIFUNC(SwapchainGetNextTexture, GsResult, GsSwapchain swapchain, GsTexture *pTexture);
+    GS_APIFUNC(SwapchainGetNextTexture, GsResult, GsSwapchain swapchain, GsTexture *pTexture)
     GS_APIFUNC(SwapchainPresent, GsResult, GsSwapchain swapchain)
 
     GS_APIFUNC(DestroyCommandList, void, GsCommandList commandList)
-    GS_APIFUNC(CommandListBegin, GsResult, GsCommandList commandList)
-    GS_APIFUNC(CommandListEnd, void, GsCommandList commandList)
+    GS_APIFUNC(BeginCommandList, GsResult, GsCommandList commandList)
+    GS_APIFUNC(EndCommandList, void, GsCommandList commandList)
+    GS_APIFUNC(BeginRenderPass, void, GsCommandList commandList, GsRenderPassInfo *info)
+    GS_APIFUNC(EndRenderPass, void, GsCommandList commandList)
 
 #ifdef __cplusplus
 }
