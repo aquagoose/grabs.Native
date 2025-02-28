@@ -12,3 +12,4 @@ target_include_directories(grabs PUBLIC include)
 
 add_executable(grabstest main.cpp)
 target_link_libraries(grabstest PUBLIC grabs)
+target_link_libraries(grabstest PUBLIC SDL2)

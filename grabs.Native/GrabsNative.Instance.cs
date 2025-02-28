@@ -91,4 +91,22 @@ public static unsafe partial class GrabsNative
         
         return Result.Ok;
     }
+
+    [UnmanagedCallersOnly(EntryPoint = "gsInstanceCreateSurface")]
+    public static Result InstanceCreateSurface(GCHandle instance, SurfaceInfo* info, GCHandle* pSurface)
+    {
+        Instance gInstance = FromHandle<Instance>(instance);
+
+        try
+        {
+            Surface surface = gInstance.CreateSurface(in *info);
+            *pSurface = CreateHandle(surface);
+        }
+        catch (Exception)
+        {
+            return Result.UnknownError;
+        }
+
+        return Result.Ok;
+    }
 }

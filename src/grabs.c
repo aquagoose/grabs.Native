@@ -12,16 +12,23 @@
 #define load dlsym
 #endif
 
-PfnGsCreateInstanceFunc gsCreateInstance = NULL;
-PfnGsDestroyInstanceFunc gsDestroyInstance = NULL;
-PfnGsInstanceGetBackendFunc gsInstanceGetBackend = NULL;
-PfnGsInstanceEnumerateAdaptersFunc gsInstanceEnumerateAdapters = NULL;
+#define GS_IMPLFUNC(Name) PfnGs##Name##Func gs##Name = NULL;
+#define GS_LOADFUNC(Name) gs##Name = (PfnGs##Name##Func) load(handle, "gs"#Name)
+
+GS_IMPLFUNC(CreateInstance)
+GS_IMPLFUNC(DestroyInstance)
+GS_IMPLFUNC(InstanceGetBackend)
+GS_IMPLFUNC(InstanceEnumerateAdapters)
+GS_IMPLFUNC(InstanceCreateSurface)
+GS_IMPLFUNC(DestroySurface);
 
 void gsInit()
 {
     void* handle = open("/home/aqua/Documents/C#/grabs.Native/grabs.Native/bin/Release/net9.0/linux-x64/publish/grabs.Native.so");
-    gsCreateInstance = (PfnGsCreateInstanceFunc) load(handle, "gsCreateInstance");
-    gsDestroyInstance = (PfnGsDestroyInstanceFunc) load(handle, "gsDestroyInstance");
-    gsInstanceGetBackend = (PfnGsInstanceGetBackendFunc) load(handle, "gsInstanceGetBackend");
-    gsInstanceEnumerateAdapters = (PfnGsInstanceEnumerateAdaptersFunc) load(handle, "gsInstanceEnumerateAdapters");
+    GS_LOADFUNC(CreateInstance);
+    GS_LOADFUNC(DestroyInstance);
+    GS_LOADFUNC(InstanceGetBackend);
+    GS_LOADFUNC(InstanceEnumerateAdapters);
+    GS_LOADFUNC(InstanceCreateSurface);
+    GS_LOADFUNC(DestroySurface);
 }
