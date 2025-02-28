@@ -19,18 +19,36 @@ extern "C" {
         GS_RESULT_DEBUG_LAYERS_NOT_FOUND
     } GsResult;
 
+    typedef enum
+    {
+        GS_ADAPTER_TYPE_OTHER,
+        GS_ADAPTER_TYPE_SOFTWARE,
+        GS_ADAPTER_TYPE_INTEGRATED,
+        GS_ADAPTER_TYPE_DEDICATED,
+    } GsAdapterType;
+
     typedef struct
     {
         const char* name;
         bool debug;
     } GsInstanceInfo;
 
+    typedef struct
+    {
+        void* handle;
+        uint32_t index;
+        const char* name;
+        GsAdapterType type;
+        uint64_t dedicatedMemory;
+    } GsAdapter;
+
     typedef void* GsInstance;
 
     extern void gsInit();
 
     GS_APIFUNC(CreateInstance, GsResult, GsInstanceInfo *pInfo, GsInstance *pInstance)
-    GS_APIFUNC(InstanceGetBackend, GsResult, GsInstance instance, const char** pBackend)
+    GS_APIFUNC(InstanceGetBackend, GsResult, GsInstance instance, const char **pBackend)
+    GS_APIFUNC(InstanceEnumerateAdapters, GsResult, GsInstance instance, uint32_t *pNumAdapters, GsAdapter *pAdapters);
 
 #ifdef __cplusplus
 }

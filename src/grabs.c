@@ -14,10 +14,12 @@
 
 PfnGsCreateInstanceFunc gsCreateInstance = NULL;
 PfnGsInstanceGetBackendFunc gsInstanceGetBackend = NULL;
+PfnGsInstanceEnumerateAdaptersFunc gsInstanceEnumerateAdapters = NULL;
 
 void gsInit()
 {
     void* handle = open("/home/aqua/Documents/C#/grabs.Native/grabs.Native/bin/Release/net9.0/linux-x64/publish/grabs.Native.so");
     gsCreateInstance = (PfnGsCreateInstanceFunc) load(handle, "gsCreateInstance");
     gsInstanceGetBackend = (PfnGsInstanceGetBackendFunc) load(handle, "gsInstanceGetBackend");
+    gsInstanceEnumerateAdapters = (PfnGsInstanceEnumerateAdaptersFunc) load(handle, "gsInstanceEnumerateAdapters");
 }

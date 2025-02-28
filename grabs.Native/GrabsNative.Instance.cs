@@ -54,4 +54,33 @@ public static unsafe partial class GrabsNative
 
         return Result.Ok;
     }
+
+    [UnmanagedCallersOnly(EntryPoint = "gsInstanceEnumerateAdapters")]
+    public static Result InstanceEnumerateAdapters(GCHandle instance, uint* numAdapters, Adapter* adapters)
+    {
+        Instance gInstance = FromHandle<Instance>(instance);
+
+        try
+        {
+            grabs.Graphics.Adapter[] gAdapters = gInstance.EnumerateAdapters();
+
+            *numAdapters = (uint) gAdapters.Length;
+
+            if (adapters != null)
+            {
+                for (int i = 0; i < gAdapters.Length; i++)
+                {
+                    Adapter adapter = new Adapter(gAdapters[i]);
+
+                    adapters[i] = adapter;
+                }
+            }
+        }
+        catch (Exception)
+        {
+            return Result.UnknownError;
+        }
+        
+        return Result.Ok;
+    }
 }
