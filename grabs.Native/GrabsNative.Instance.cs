@@ -50,7 +50,6 @@ public static unsafe partial class GrabsNative
     public static Result InstanceGetBackend(GCHandle instance, nint* pBackend)
     {
         Instance gInstance = FromHandle<Instance>(instance);
-
         *pBackend = Marshal.StringToCoTaskMemAnsi(gInstance.Backend);
 
         return Result.Ok;
