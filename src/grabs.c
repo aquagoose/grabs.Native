@@ -20,11 +20,12 @@ GS_IMPLFUNC(DestroyInstance)
 GS_IMPLFUNC(InstanceGetBackend)
 GS_IMPLFUNC(InstanceEnumerateAdapters)
 GS_IMPLFUNC(InstanceCreateSurface)
-GS_IMPLFUNC(DestroySurface)
 GS_IMPLFUNC(InstanceCreateDevice)
+GS_IMPLFUNC(DestroySurface)
 GS_IMPLFUNC(DestroyDevice)
 GS_IMPLFUNC(DeviceCreateSwapchain)
 GS_IMPLFUNC(DestroySwapchain)
+GS_IMPLFUNC(SwapchainPresent);
 
 void gsInit()
 {
@@ -34,9 +35,10 @@ void gsInit()
     GS_LOADFUNC(InstanceGetBackend);
     GS_LOADFUNC(InstanceEnumerateAdapters);
     GS_LOADFUNC(InstanceCreateSurface);
-    GS_LOADFUNC(DestroySurface);
     GS_LOADFUNC(InstanceCreateDevice);
+    GS_LOADFUNC(DestroySurface);
     GS_LOADFUNC(DestroyDevice);
     GS_LOADFUNC(DeviceCreateSwapchain);
     GS_LOADFUNC(DestroySwapchain);
+    GS_LOADFUNC(SwapchainPresent);
 }

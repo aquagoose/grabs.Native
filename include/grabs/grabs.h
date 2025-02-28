@@ -28,7 +28,8 @@ extern "C" {
         GS_RESULT_OK,
         GS_RESULT_UNKNOWN_ERROR,
         GS_RESULT_NO_BACKENDS,
-        GS_RESULT_DEBUG_LAYERS_NOT_FOUND
+        GS_RESULT_DEBUG_LAYERS_NOT_FOUND,
+        GS_RESULT_FAILED_TO_PRESENT
     } GsResult;
 
     typedef enum
@@ -185,15 +186,20 @@ extern "C" {
 
     GS_APIFUNC(CreateInstance, GsResult, GsInstanceInfo *pInfo, GsInstance *pInstance)
     GS_APIFUNC(DestroyInstance, void, GsInstance instance)
+
     GS_APIFUNC(InstanceGetBackend, GsResult, GsInstance instance, const char **pBackend)
     GS_APIFUNC(InstanceEnumerateAdapters, GsResult, GsInstance instance, uint32_t *pNumAdapters, GsAdapter *pAdapters)
     GS_APIFUNC(InstanceCreateSurface, GsResult, GsInstance instance, GsSurfaceInfo *pInfo, GsSurface *pSurface)
-    GS_APIFUNC(DestroySurface, void, GsSurface surface)
     GS_APIFUNC(InstanceCreateDevice, GsResult, GsInstance instance, GsSurface surface, GsAdapter *pAdapter, GsDevice *pDevice)
-    GS_APIFUNC(DestroyDevice, void, GsDevice device)
 
+    GS_APIFUNC(DestroySurface, void, GsSurface surface)
+
+    GS_APIFUNC(DestroyDevice, void, GsDevice device)
     GS_APIFUNC(DeviceCreateSwapchain, GsResult, GsDevice device, GsSwapchainInfo *pInfo, GsSwapchain *pSwapchain)
+
     GS_APIFUNC(DestroySwapchain, void, GsSwapchain swapchain)
+    GS_APIFUNC(SwapchainPresent, GsResult, GsSwapchain swapchain);
+
 
 #ifdef __cplusplus
 }

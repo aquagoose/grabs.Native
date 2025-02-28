@@ -8,4 +8,5 @@ public enum Result
     InvalidHandle,
     NoBackends,
     DebugLayersNotFound,
+    FailedToPresent
 }

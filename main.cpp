@@ -97,6 +97,30 @@ int main(int argc, char* argv[])
     GsSwapchain swapchain;
     CHECK_RESULT(gsDeviceCreateSwapchain(device, &swapchainInfo, &swapchain));
 
+    bool alive = true;
+    while (alive)
+    {
+        SDL_Event event;
+        while (SDL_PollEvent(&event))
+        {
+            switch (event.type)
+            {
+                case SDL_WINDOWEVENT:
+                {
+                    switch (event.window.event)
+                    {
+                        case SDL_WINDOWEVENT_CLOSE:
+                            alive = false;
+                            break;
+                    }
+                    break;
+                }
+            }
+        }
+
+        CHECK_RESULT(gsSwapchainPresent(swapchain));
+    }
+
     gsDestroySwapchain(swapchain);
     gsDestroyDevice(device);
     gsDestroySurface(surface);
