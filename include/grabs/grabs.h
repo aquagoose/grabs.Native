@@ -22,6 +22,7 @@ extern "C" {
     typedef void* GsSurface;
     typedef void* GsDevice;
     typedef void* GsSwapchain;
+    typedef void* GsCommandList;
 
     typedef enum
     {
@@ -196,10 +197,12 @@ extern "C" {
 
     GS_APIFUNC(DestroyDevice, void, GsDevice device)
     GS_APIFUNC(DeviceCreateSwapchain, GsResult, GsDevice device, GsSwapchainInfo *pInfo, GsSwapchain *pSwapchain)
+    GS_APIFUNC(DeviceCreateCommandList, GsResult, GsDevice device, GsCommandList *pCommandList);
 
     GS_APIFUNC(DestroySwapchain, void, GsSwapchain swapchain)
     GS_APIFUNC(SwapchainPresent, GsResult, GsSwapchain swapchain);
 
+    GS_APIFUNC(DestroyCommandList, void, GsCommandList list);
 
 #ifdef __cplusplus
 }

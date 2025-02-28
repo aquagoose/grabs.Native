@@ -38,4 +38,21 @@ public static unsafe partial class GrabsNative
 
         return Result.Ok;
     }
+
+    [UnmanagedCallersOnly(EntryPoint = "gsDeviceCreateCommandList")]
+    public static Result DeviceCreateCommandList(GCHandle device, GCHandle* pCommandList)
+    {
+        Device gDevice = FromHandle<Device>(device);
+
+        try
+        {
+            *pCommandList = ToHandle(gDevice.CreateCommandList());
+        }
+        catch (Exception)
+        {
+            return Result.UnknownError;
+        }
+
+        return Result.Ok;
+    }
 }

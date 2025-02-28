@@ -97,6 +97,9 @@ int main(int argc, char* argv[])
     GsSwapchain swapchain;
     CHECK_RESULT(gsDeviceCreateSwapchain(device, &swapchainInfo, &swapchain));
 
+    GsCommandList cl;
+    CHECK_RESULT(gsDeviceCreateCommandList(device, &cl));
+
     bool alive = true;
     while (alive)
     {
@@ -121,6 +124,7 @@ int main(int argc, char* argv[])
         CHECK_RESULT(gsSwapchainPresent(swapchain));
     }
 
+    gsDestroyCommandList(cl);
     gsDestroySwapchain(swapchain);
     gsDestroyDevice(device);
     gsDestroySurface(surface);

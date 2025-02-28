@@ -24,8 +24,10 @@ GS_IMPLFUNC(InstanceCreateDevice)
 GS_IMPLFUNC(DestroySurface)
 GS_IMPLFUNC(DestroyDevice)
 GS_IMPLFUNC(DeviceCreateSwapchain)
+GS_IMPLFUNC(DeviceCreateCommandList);
 GS_IMPLFUNC(DestroySwapchain)
 GS_IMPLFUNC(SwapchainPresent);
+GS_IMPLFUNC(DestroyCommandList);
 
 void gsInit()
 {
@@ -39,6 +41,8 @@ void gsInit()
     GS_LOADFUNC(DestroySurface);
     GS_LOADFUNC(DestroyDevice);
     GS_LOADFUNC(DeviceCreateSwapchain);
+    GS_LOADFUNC(DeviceCreateCommandList);
     GS_LOADFUNC(DestroySwapchain);
     GS_LOADFUNC(SwapchainPresent);
+    GS_LOADFUNC(DestroyCommandList);
 }
