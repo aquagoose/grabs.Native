@@ -20,7 +20,9 @@ GS_IMPLFUNC(DestroyInstance)
 GS_IMPLFUNC(InstanceGetBackend)
 GS_IMPLFUNC(InstanceEnumerateAdapters)
 GS_IMPLFUNC(InstanceCreateSurface)
-GS_IMPLFUNC(DestroySurface);
+GS_IMPLFUNC(DestroySurface)
+GS_IMPLFUNC(InstanceCreateDevice)
+GS_IMPLFUNC(DestroyDevice)
 
 void gsInit()
 {
@@ -31,4 +33,6 @@ void gsInit()
     GS_LOADFUNC(InstanceEnumerateAdapters);
     GS_LOADFUNC(InstanceCreateSurface);
     GS_LOADFUNC(DestroySurface);
+    GS_LOADFUNC(InstanceCreateDevice);
+    GS_LOADFUNC(DestroyDevice);
 }

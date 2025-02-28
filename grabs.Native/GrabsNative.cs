@@ -4,7 +4,7 @@ namespace grabs.Native;
 
 public static unsafe partial class GrabsNative
 {
-    public static GCHandle CreateHandle<T>(T obj)
+    public static GCHandle ToHandle<T>(T obj)
     {
         return GCHandle.Alloc(obj);
     }

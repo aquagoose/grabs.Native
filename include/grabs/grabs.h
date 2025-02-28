@@ -88,6 +88,7 @@ extern "C" {
 
     typedef void* GsInstance;
     typedef void* GsSurface;
+    typedef void* GsDevice;
 
     extern void gsInit();
 
@@ -97,6 +98,8 @@ extern "C" {
     GS_APIFUNC(InstanceEnumerateAdapters, GsResult, GsInstance instance, uint32_t *pNumAdapters, GsAdapter *pAdapters);
     GS_APIFUNC(InstanceCreateSurface, GsResult, GsInstance instance, GsSurfaceInfo *pInfo, GsSurface *pSurface);
     GS_APIFUNC(DestroySurface, void, GsSurface surface);
+    GS_APIFUNC(InstanceCreateDevice, GsResult, GsInstance instance, GsSurface surface, GsAdapter *pAdapter, GsDevice *pDevice);
+    GS_APIFUNC(DestroyDevice, void, GsDevice device);
 
 #ifdef __cplusplus
 }

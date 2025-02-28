@@ -83,6 +83,10 @@ int main(int argc, char* argv[])
     GsSurface surface;
     CHECK_RESULT(gsInstanceCreateSurface(instance, &surfaceInfo, &surface));
 
+    GsDevice device;
+    CHECK_RESULT(gsInstanceCreateDevice(instance, surface, nullptr, &device));
+
+    gsDestroyDevice(device);
     gsDestroySurface(surface);
     gsDestroyInstance(instance);
 
