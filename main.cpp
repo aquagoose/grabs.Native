@@ -121,6 +121,14 @@ int main(int argc, char* argv[])
             }
         }
 
+        GsTexture texture;
+        CHECK_RESULT(gsSwapchainGetNextTexture(swapchain, &texture));
+
+        CHECK_RESULT(gsCommandListBegin(cl));
+
+        gsCommandListEnd(cl);
+
+        CHECK_RESULT(gsDeviceExecuteCommandList(device, cl));
         CHECK_RESULT(gsSwapchainPresent(swapchain));
     }
 

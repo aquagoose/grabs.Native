@@ -12,4 +12,28 @@ public static unsafe partial class GrabsNative
         gList.Dispose();
         commandList.Free();
     }
+
+    [UnmanagedCallersOnly(EntryPoint = "gsCommandListBegin")]
+    public static Result CommandListBegin(GCHandle commandList)
+    {
+        CommandList gList = FromHandle<CommandList>(commandList);
+
+        try
+        {
+            gList.Begin();
+        }
+        catch (Exception)
+        {
+            return Result.UnknownError;
+        }
+
+        return Result.Ok;
+    }
+
+    [UnmanagedCallersOnly(EntryPoint = "gsCommandListEnd")]
+    public static void CommandListEnd(GCHandle commandList)
+    {
+        CommandList gList = FromHandle<CommandList>(commandList);
+        gList.End();
+    }
 }

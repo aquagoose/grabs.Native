@@ -55,4 +55,22 @@ public static unsafe partial class GrabsNative
 
         return Result.Ok;
     }
+
+    [UnmanagedCallersOnly(EntryPoint = "gsDeviceExecuteCommandList")]
+    public static Result DeviceExecuteCommandList(GCHandle device, GCHandle commandList)
+    {
+        Device gDevice = FromHandle<Device>(device);
+        CommandList gList = FromHandle<CommandList>(commandList);
+
+        try
+        {
+            gDevice.ExecuteCommandList(gList);
+        }
+        catch (Exception)
+        {
+            return Result.UnknownError;
+        }
+
+        return Result.Ok;
+    }
 }
