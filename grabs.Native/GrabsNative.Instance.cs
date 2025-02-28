@@ -9,10 +9,8 @@ namespace grabs.Native;
 
 public static unsafe partial class GrabsNative
 {
-    private static Dictionary<nint, Instance> _instanceHandles = new Dictionary<nint, Instance>();
-    
     [UnmanagedCallersOnly(EntryPoint = "gsCreateInstance")]
-    public static Result CreateInstance(InstanceInfo* info, nint* pInstance)
+    public static Result CreateInstance(InstanceInfo* info, GCHandle* pInstance)
     {
         GrabsLog.LogMessage += (severity, type, message, file, line) => Console.WriteLine(message);
         
@@ -25,10 +23,10 @@ public static unsafe partial class GrabsNative
             Debug = info->Debug
         };
 
-        Instance gInstance;
+        Instance instance;
         try
         {
-            gInstance = Instance.Create(in grabsInfo);
+            instance = Instance.Create(in grabsInfo);
         }
         catch (NoBackendsException)
         {
@@ -42,17 +40,16 @@ public static unsafe partial class GrabsNative
         {
             return Result.UnknownError;
         }
-        
-        *pInstance = CreateHandle(_instanceHandles, gInstance);
+
+        *pInstance = CreateHandle(instance);
 
         return Result.Ok;
     }
 
     [UnmanagedCallersOnly(EntryPoint = "gsInstanceGetBackend")]
-    public static Result InstanceGetBackend(nint instance, nint* pBackend)
+    public static Result InstanceGetBackend(GCHandle instance, nint* pBackend)
     {
-        if (!TryGetHandle(_instanceHandles, instance, out Instance gInstance))
-            return Result.InvalidHandle;
+        Instance gInstance = FromHandle<Instance>(instance);
 
         *pBackend = Marshal.StringToCoTaskMemAnsi(gInstance.Backend);
 

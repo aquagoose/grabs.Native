@@ -1,21 +1,16 @@
-﻿namespace grabs.Native;
+﻿using System.Runtime.InteropServices;
+
+namespace grabs.Native;
 
 public static unsafe partial class GrabsNative
 {
-    private static nint _handleIndex;
-
-    private static nint CreateHandle<T>(Dictionary<nint, T> dict, T obj)
+    public static GCHandle CreateHandle<T>(T obj)
     {
-        nint handle = ++_handleIndex;
-        dict.Add(handle, obj);
-        return handle;
+        return GCHandle.Alloc(obj);
     }
 
-    private static bool TryGetHandle<T>(Dictionary<nint, T> dict, nint handle, out T obj)
+    public static T FromHandle<T>(GCHandle handle)
     {
-        if (!dict.TryGetValue(handle, out obj))
-            return false;
-
-        return true;
+        return (T) handle.Target;
     }
 }
