@@ -1,9 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <ItemGroup>
+    <ProjectReference Include="..\grabs\src\grabs.Graphics\grabs.Graphics.csproj" />
+    <ProjectReference Include="..\grabs\src\grabs.Graphics.D3D11\grabs.Graphics.D3D11.csproj" />
+    <ProjectReference Include="..\grabs\src\grabs.Graphics.Vulkan\grabs.Graphics.Vulkan.csproj" />
+    <ProjectReference Include="..\grabs\src\grabs.Core\grabs.Core.csproj" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PublishAot>true</PublishAot>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
 </Project>
