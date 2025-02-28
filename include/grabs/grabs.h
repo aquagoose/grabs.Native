@@ -47,6 +47,7 @@ extern "C" {
     extern void gsInit();
 
     GS_APIFUNC(CreateInstance, GsResult, GsInstanceInfo *pInfo, GsInstance *pInstance)
+    GS_APIFUNC(DestroyInstance, void, GsInstance instance);
     GS_APIFUNC(InstanceGetBackend, GsResult, GsInstance instance, const char **pBackend)
     GS_APIFUNC(InstanceEnumerateAdapters, GsResult, GsInstance instance, uint32_t *pNumAdapters, GsAdapter *pAdapters);
 

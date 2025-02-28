@@ -31,5 +31,7 @@ int main(int argc, char* argv[])
         std::cout << adapter.name << std::endl;
     }
 
+    gsDestroyInstance(instance);
+
     return 0;
 }

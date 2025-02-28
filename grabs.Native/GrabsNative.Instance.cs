@@ -46,6 +46,14 @@ public static unsafe partial class GrabsNative
         return Result.Ok;
     }
 
+    [UnmanagedCallersOnly(EntryPoint = "gsDestroyInstance")]
+    public static void DestroyInstance(GCHandle instance)
+    {
+        Instance gInstance = FromHandle<Instance>(instance);
+        gInstance.Dispose();
+        instance.Free();
+    }
+
     [UnmanagedCallersOnly(EntryPoint = "gsInstanceGetBackend")]
     public static Result InstanceGetBackend(GCHandle instance, nint* pBackend)
     {
