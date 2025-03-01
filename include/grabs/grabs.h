@@ -11,7 +11,7 @@
 #include <X11/Xlib-xcb.h>
 #endif
 
-#define GS_APIFUNC(Name, RetType, Params...) typedef RetType (*PfnGs##Name##Func)(Params);\
+#define GS_APIFUNC(Name, RetType, ...) typedef RetType (*PfnGs##Name##Func)(__VA_ARGS__);\
     extern PfnGs##Name##Func gs##Name;
 
 #ifdef __cplusplus

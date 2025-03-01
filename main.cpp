@@ -64,7 +64,7 @@ int main(int argc, char* argv[])
         case SDL_SYSWM_WINDOWS:
             surfaceInfo.type = GS_SURFACE_TYPE_WINDOWS;
             surfaceInfo.display.windows = wmInfo.info.win.hinstance;
-            surfaceInfo.window.windows = wmInfo.info.win.hwnd;
+            surfaceInfo.window.windows = wmInfo.info.win.window;
             break;
 #endif
 #ifdef __linux__
