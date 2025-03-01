@@ -12,7 +12,7 @@ target_include_directories(grabs PUBLIC include)
 
 add_custom_command(
         TARGET grabs PRE_BUILD
-        COMMAND dotnet publish -c Release --use-current-runtime "${CMAKE_SOURCE_DIR}/grabs.Native/grabs.Native.csproj"
+        COMMAND dotnet publish -c Release --use-current-runtime "${CMAKE_CURRENT_SOURCE_DIR}/grabs.Native/grabs.Native.csproj"
         VERBATIM
 )
 
@@ -24,7 +24,7 @@ endif()
 
 add_custom_command(
         TARGET grabs POST_BUILD
-        COMMAND "${CMAKE_COMMAND}" -E copy "${CMAKE_SOURCE_DIR}/grabs.Native/bin/Release/net9.0/linux-x64/publish/${GRABS_SHARED_NAME}" $<TARGET_FILE_DIR:grabs>
+        COMMAND "${CMAKE_COMMAND}" -E copy "${CMAKE_CURRENT_SOURCE_DIR}/grabs.Native/bin/Release/net9.0/linux-x64/publish/${GRABS_SHARED_NAME}" "${CMAKE_BINARY_DIR}"
         VERBATIM
 )
 
