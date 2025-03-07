@@ -182,6 +182,35 @@ int main(int argc, char* argv[])
     CHECK_RESULT(gsCreateShaderModule(device, GS_SHADER_STAGE_PIXEL, spirvLength, spirv, "PSMain", &pixelModule));
     gsFreeCompiledSpirv(spirv);
 
+    GsFormat format = GS_FORMAT_B8G8R8A8_UNORM;
+
+    GsVertexBufferInfo vertexBufferInfo
+    {
+        .binding = 0,
+        .stride = 5 * sizeof(float)
+    };
+
+    GsInputElement inputLayout[]
+    {
+        { .format = GS_FORMAT_R32G32B32_FLOAT, .offset = 0, .slot = 0 },
+        { .format = GS_FORMAT_R32G32_FLOAT, .offset = 12, .slot = 0 }
+    };
+
+    GsPipelineInfo pipelineInfo
+    {
+        .vertexShader = vertexModule,
+        .pixelShader = pixelModule,
+        .numColorAttachmentFormats = 1,
+        .pColorAttachmentFormats = &format,
+        .numVertexBuffers = 1,
+        .pVertexBuffers = &vertexBufferInfo,
+        .numInputElements = 2,
+        .pInputLayout = inputLayout,
+    };
+
+    GsPipeline pipeline;
+    CHECK_RESULT(gsCreatePipeline(device, &pipelineInfo, &pipeline));
+
     gsDestroyShaderModule(pixelModule);
     gsDestroyShaderModule(vertexModule);
 
@@ -233,6 +262,7 @@ int main(int argc, char* argv[])
         CHECK_RESULT(gsSwapchainPresent(swapchain));
     }
 
+    gsDestroyPipeline(pipeline);
     gsDestroyBuffer(indexBuffer);
     gsDestroyBuffer(vertexBuffer);
     gsDestroyCommandList(cl);

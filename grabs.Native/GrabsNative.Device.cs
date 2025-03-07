@@ -95,6 +95,33 @@ public static unsafe partial class GrabsNative
         return Result.Ok;
     }
 
+    [UnmanagedCallersOnly(EntryPoint = "gsCreatePipeline")]
+    public static Result CreatePipeline(GCHandle device, PipelineInfo* pInfo, GCHandle* pPipeline)
+    {
+        Device gDevice = FromHandle<Device>(device);
+        
+        Graphics.PipelineInfo info = new Graphics.PipelineInfo()
+        {
+            VertexShader = FromHandle<ShaderModule>(pInfo->VertexShader),
+            PixelShader = FromHandle<ShaderModule>(pInfo->PixelShader),
+            ColorAttachmentFormats =
+                new ReadOnlySpan<Format>(pInfo->ColorAttachmentFormats, (int) pInfo->NumColorAttachmentFormats),
+            VertexBuffers = new ReadOnlySpan<VertexBufferInfo>(pInfo->VertexBuffers, (int) pInfo->NumVertexBuffers),
+            InputLayout = new ReadOnlySpan<InputElement>(pInfo->InputLayout, (int) pInfo->NumInputElements)
+        };
+
+        try
+        {
+            *pPipeline = ToHandle(gDevice.CreatePipeline(in info));
+        }
+        catch (Exception)
+        {
+            return Result.UnknownError;
+        }
+
+        return Result.Ok;
+    }
+
     [UnmanagedCallersOnly(EntryPoint = "gsExecuteCommandList")]
     public static Result DeviceExecuteCommandList(GCHandle device, GCHandle commandList)
     {

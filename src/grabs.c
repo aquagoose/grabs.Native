@@ -42,6 +42,8 @@ GS_IMPLFUNC(CompileHLSL)
 GS_IMPLFUNC(FreeCompiledSpirv)
 GS_IMPLFUNC(CreateShaderModule)
 GS_IMPLFUNC(DestroyShaderModule)
+GS_IMPLFUNC(CreatePipeline)
+GS_IMPLFUNC(DestroyPipeline)
 
 void gsInit()
 {
@@ -71,6 +73,8 @@ void gsInit()
     GS_LOADFUNC(FreeCompiledSpirv);
     GS_LOADFUNC(CreateShaderModule);
     GS_LOADFUNC(DestroyShaderModule);
+    GS_LOADFUNC(CreatePipeline);
+    GS_LOADFUNC(DestroyPipeline);
 }
 
 const char* gsResultToString(const GsResult result)

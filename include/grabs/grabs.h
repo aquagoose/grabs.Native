@@ -26,6 +26,7 @@ extern "C" {
     typedef void* GsTexture;
     typedef void* GsCommandList;
     typedef void* GsShaderModule;
+    typedef void* GsPipeline;
 
     typedef enum
     {
@@ -241,6 +242,33 @@ extern "C" {
         GsColorAttachmentInfo* pColorAttachments;
     } GsRenderPassInfo;
 
+    typedef struct
+    {
+        uint32_t binding;
+        uint32_t stride;
+    } GsVertexBufferInfo;
+
+    typedef struct
+    {
+        GsFormat format;
+        uint32_t offset;
+        uint32_t slot;
+    } GsInputElement;
+
+    typedef struct
+    {
+        GsShaderModule vertexShader;
+        GsShaderModule pixelShader;
+        uint32_t numColorAttachmentFormats;
+        GsFormat* pColorAttachmentFormats;
+        uint32_t numVertexBuffers;
+        GsVertexBufferInfo* pVertexBuffers;
+        uint32_t numInputElements;
+        GsInputElement* pInputLayout;
+        uint32_t numDescriptors;
+        void* pDescriptors;
+    } GsPipelineInfo;
+
     extern void gsInit();
     extern const char* gsResultToString(GsResult result);
     extern const char* gsBackendToString(GsBackend backend);
@@ -252,6 +280,7 @@ extern "C" {
     GS_APIFUNC(CreateSwapchain, GsResult, GsDevice device, GsSwapchainInfo *pInfo, GsSwapchain *pSwapchain)
     GS_APIFUNC(CreateCommandList, GsResult, GsDevice device, GsCommandList *pCommandList)
     GS_APIFUNC(CreateShaderModule, GsResult, GsDevice device, GsShaderStage stage, size_t spirvLength, uint8_t *pSpirv, const char *pEntryPoint, GsShaderModule *pModule)
+    GS_APIFUNC(CreatePipeline, GsResult, GsDevice device, GsPipelineInfo *pInfo, GsPipeline *pPipeline)
 
     GS_APIFUNC(DestroyInstance, void, GsInstance instance)
     GS_APIFUNC(DestroySurface, void, GsSurface surface)
@@ -260,6 +289,7 @@ extern "C" {
     GS_APIFUNC(DestroySwapchain, void, GsSwapchain swapchain)
     GS_APIFUNC(DestroyCommandList, void, GsCommandList commandList)
     GS_APIFUNC(DestroyShaderModule, void, GsShaderModule module)
+    GS_APIFUNC(DestroyPipeline, void, GsPipeline pipeline)
 
     GS_APIFUNC(GetCurrentBackend, GsBackend, GsInstance instance)
     GS_APIFUNC(EnumerateAdapters, GsResult, GsInstance instance, uint32_t *pNumAdapters, GsAdapter *pAdapters)
