@@ -44,6 +44,11 @@ GS_IMPLFUNC(CreateShaderModule)
 GS_IMPLFUNC(DestroyShaderModule)
 GS_IMPLFUNC(CreatePipeline)
 GS_IMPLFUNC(DestroyPipeline)
+GS_IMPLFUNC(SetViewport)
+GS_IMPLFUNC(SetPipeline)
+GS_IMPLFUNC(SetVertexBuffer)
+GS_IMPLFUNC(SetIndexBuffer)
+GS_IMPLFUNC(DrawIndexed)
 
 void gsInit()
 {
@@ -75,6 +80,11 @@ void gsInit()
     GS_LOADFUNC(DestroyShaderModule);
     GS_LOADFUNC(CreatePipeline);
     GS_LOADFUNC(DestroyPipeline);
+    GS_LOADFUNC(SetViewport);
+    GS_LOADFUNC(SetPipeline);
+    GS_LOADFUNC(SetVertexBuffer);
+    GS_LOADFUNC(SetIndexBuffer);
+    GS_LOADFUNC(DrawIndexed);
 }
 
 const char* gsResultToString(const GsResult result)

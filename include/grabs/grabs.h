@@ -231,6 +231,16 @@ extern "C" {
 
     typedef struct
     {
+        float x;
+        float y;
+        float width;
+        float height;
+        float minDepth;
+        float maxDepth;
+    } GsViewport;
+
+    typedef struct
+    {
         GsTexture texture;
         float clearColor[4];
         GsLoadOp loadOp;
@@ -303,6 +313,11 @@ extern "C" {
     GS_APIFUNC(EndCommandList, void, GsCommandList commandList)
     GS_APIFUNC(BeginRenderPass, void, GsCommandList commandList, GsRenderPassInfo *info)
     GS_APIFUNC(EndRenderPass, void, GsCommandList commandList)
+    GS_APIFUNC(SetViewport, void, GsCommandList commandList, GsViewport *pViewport)
+    GS_APIFUNC(SetPipeline, void, GsCommandList commandList, GsPipeline pipeline)
+    GS_APIFUNC(SetVertexBuffer, void, GsCommandList commandList, uint32_t slot, GsBuffer buffer, uint32_t offset)
+    GS_APIFUNC(SetIndexBuffer, void, GsCommandList commandList, GsBuffer buffer, GsFormat format, uint32_t offset)
+    GS_APIFUNC(DrawIndexed, void, GsCommandList commandList, uint32_t numIndices)
 
     GS_APIFUNC(CompileHLSL, GsResult, GsShaderStage stage, const char *pHlsl, const char *pEntryPoint, size_t *pSpirvLength, uint8_t **ppSpirv)
     GS_APIFUNC(FreeCompiledSpirv, void, uint8_t *pSpirv)

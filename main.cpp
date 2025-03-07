@@ -62,7 +62,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    SDL_Window* window = SDL_CreateWindow("Native GRABS test in C/++!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, 0);
+    SDL_Window* window = SDL_CreateWindow("Native GRABS test in C/++!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, 0);
     if (!window)
     {
         std::cout << "Failed to create window: " << SDL_GetError() << std::endl;
@@ -128,7 +128,7 @@ int main(int argc, char* argv[])
     GsSwapchainInfo swapchainInfo
     {
         .surface = surface,
-        .size = { 800, 600 },
+        .size = { 1280, 720 },
         .format = GS_FORMAT_B8G8R8A8_UNORM,
         .presentMode = GS_PRESENT_MODE_FIFO,
         .numBuffers = 2
@@ -254,6 +254,23 @@ int main(int argc, char* argv[])
         };
 
         gsBeginRenderPass(cl, &passInfo);
+
+        GsViewport viewport
+        {
+            .x = 0,
+            .y = 0,
+            .width = 1280,
+            .height = 720,
+            .minDepth = 0.0f,
+            .maxDepth = 1.0f
+        };
+        gsSetViewport(cl, &viewport);
+
+        gsSetPipeline(cl, pipeline);
+        gsSetVertexBuffer(cl, 0, vertexBuffer, 0);
+        gsSetIndexBuffer(cl, indexBuffer, GS_FORMAT_R16_UINT, 0);
+        gsDrawIndexed(cl, 6);
+
         gsEndRenderPass(cl);
 
         gsEndCommandList(cl);
