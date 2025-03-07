@@ -40,14 +40,14 @@ int main(int argc, char* argv[])
     GsInstance instance;
     CHECK_RESULT(gsCreateInstance(&info, &instance));
 
-    const GsBackend backend = gsInstanceGetBackend(instance);
+    const GsBackend backend = gsGetCurrentBackend(instance);
 
     std::cout << gsBackendToString(backend) << std::endl;
 
     uint32_t numAdapters;
-    CHECK_RESULT(gsInstanceEnumerateAdapters(instance, &numAdapters, nullptr));
+    CHECK_RESULT(gsEnumerateAdapters(instance, &numAdapters, nullptr));
     std::vector<GsAdapter> adapters(numAdapters);
-    CHECK_RESULT(gsInstanceEnumerateAdapters(instance, &numAdapters, adapters.data()));
+    CHECK_RESULT(gsEnumerateAdapters(instance, &numAdapters, adapters.data()));
 
     for (const auto& adapter : adapters)
         std::cout << adapter.name << std::endl;
@@ -82,10 +82,10 @@ int main(int argc, char* argv[])
     }
 
     GsSurface surface;
-    CHECK_RESULT(gsInstanceCreateSurface(instance, &surfaceInfo, &surface));
+    CHECK_RESULT(gsCreateSurface(instance, &surfaceInfo, &surface));
 
     GsDevice device;
-    CHECK_RESULT(gsInstanceCreateDevice(instance, surface, nullptr, &device));
+    CHECK_RESULT(gsCreateDevice(instance, surface, nullptr, &device));
 
     float vertices[] =
     {
@@ -126,10 +126,10 @@ int main(int argc, char* argv[])
         .numBuffers = 2
     };
     GsSwapchain swapchain;
-    CHECK_RESULT(gsDeviceCreateSwapchain(device, &swapchainInfo, &swapchain));
+    CHECK_RESULT(gsCreateSwapchain(device, &swapchainInfo, &swapchain));
 
     GsCommandList cl;
-    CHECK_RESULT(gsDeviceCreateCommandList(device, &cl));
+    CHECK_RESULT(gsCreateCommandList(device, &cl));
 
     bool alive = true;
     while (alive)
@@ -153,7 +153,7 @@ int main(int argc, char* argv[])
         }
 
         GsTexture texture;
-        CHECK_RESULT(gsSwapchainGetNextTexture(swapchain, &texture));
+        CHECK_RESULT(gsGetNextSwapchainTexture(swapchain, &texture));
 
         CHECK_RESULT(gsBeginCommandList(cl));
 
@@ -175,7 +175,7 @@ int main(int argc, char* argv[])
 
         gsEndCommandList(cl);
 
-        CHECK_RESULT(gsDeviceExecuteCommandList(device, cl));
+        CHECK_RESULT(gsExecuteCommandList(device, cl));
         CHECK_RESULT(gsSwapchainPresent(swapchain));
     }
 

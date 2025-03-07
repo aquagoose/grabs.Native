@@ -237,11 +237,11 @@ extern "C" {
     extern const char* gsBackendToString(GsBackend backend);
 
     GS_APIFUNC(CreateInstance, GsResult, GsInstanceInfo *pInfo, GsInstance *pInstance)
-    GS_APIFUNC(InstanceCreateSurface, GsResult, GsInstance instance, GsSurfaceInfo *pInfo, GsSurface *pSurface)
-    GS_APIFUNC(InstanceCreateDevice, GsResult, GsInstance instance, GsSurface surface, GsAdapter *pAdapter, GsDevice *pDevice)
+    GS_APIFUNC(CreateSurface, GsResult, GsInstance instance, GsSurfaceInfo *pInfo, GsSurface *pSurface)
+    GS_APIFUNC(CreateDevice, GsResult, GsInstance instance, GsSurface surface, GsAdapter *pAdapter, GsDevice *pDevice)
     GS_APIFUNC(CreateBuffer, GsResult, GsDevice device, GsBufferInfo *pBufferInfo, void* pData, GsBuffer *pBuffer)
-    GS_APIFUNC(DeviceCreateSwapchain, GsResult, GsDevice device, GsSwapchainInfo *pInfo, GsSwapchain *pSwapchain)
-    GS_APIFUNC(DeviceCreateCommandList, GsResult, GsDevice device, GsCommandList *pCommandList)
+    GS_APIFUNC(CreateSwapchain, GsResult, GsDevice device, GsSwapchainInfo *pInfo, GsSwapchain *pSwapchain)
+    GS_APIFUNC(CreateCommandList, GsResult, GsDevice device, GsCommandList *pCommandList)
 
     GS_APIFUNC(DestroyInstance, void, GsInstance instance)
     GS_APIFUNC(DestroySurface, void, GsSurface surface)
@@ -250,12 +250,12 @@ extern "C" {
     GS_APIFUNC(DestroySwapchain, void, GsSwapchain swapchain)
     GS_APIFUNC(DestroyCommandList, void, GsCommandList commandList)
 
-    GS_APIFUNC(InstanceGetBackend, GsBackend, GsInstance instance)
-    GS_APIFUNC(InstanceEnumerateAdapters, GsResult, GsInstance instance, uint32_t *pNumAdapters, GsAdapter *pAdapters)
+    GS_APIFUNC(GetCurrentBackend, GsBackend, GsInstance instance)
+    GS_APIFUNC(EnumerateAdapters, GsResult, GsInstance instance, uint32_t *pNumAdapters, GsAdapter *pAdapters)
 
-    GS_APIFUNC(DeviceExecuteCommandList, GsResult, GsDevice device, GsCommandList commandList)
+    GS_APIFUNC(ExecuteCommandList, GsResult, GsDevice device, GsCommandList commandList)
 
-    GS_APIFUNC(SwapchainGetNextTexture, GsResult, GsSwapchain swapchain, GsTexture *pTexture)
+    GS_APIFUNC(GetNextSwapchainTexture, GsResult, GsSwapchain swapchain, GsTexture *pTexture)
     GS_APIFUNC(SwapchainPresent, GsResult, GsSwapchain swapchain)
 
     GS_APIFUNC(BeginCommandList, GsResult, GsCommandList commandList)

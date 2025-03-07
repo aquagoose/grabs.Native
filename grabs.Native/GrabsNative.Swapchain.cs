@@ -13,8 +13,8 @@ public static unsafe partial class GrabsNative
         swapchain.Free();
     }
 
-    [UnmanagedCallersOnly(EntryPoint = "gsSwapchainGetNextTexture")]
-    public static Result SwapchainGetNextTexture(GCHandle swapchain, GCHandle* pTexture)
+    [UnmanagedCallersOnly(EntryPoint = "gsGetNextSwapchainTexture")]
+    public static Result GetNextSwapchainTexture(GCHandle swapchain, GCHandle* pTexture)
     {
         Swapchain gSwapchain = FromHandle<Swapchain>(swapchain);
 

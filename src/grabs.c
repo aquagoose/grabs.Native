@@ -19,18 +19,18 @@
 
 GS_IMPLFUNC(CreateInstance)
 GS_IMPLFUNC(DestroyInstance)
-GS_IMPLFUNC(InstanceGetBackend)
-GS_IMPLFUNC(InstanceEnumerateAdapters)
-GS_IMPLFUNC(InstanceCreateSurface)
-GS_IMPLFUNC(InstanceCreateDevice)
+GS_IMPLFUNC(GetCurrentBackend)
+GS_IMPLFUNC(EnumerateAdapters)
+GS_IMPLFUNC(CreateSurface)
+GS_IMPLFUNC(CreateDevice)
 GS_IMPLFUNC(DestroySurface)
 GS_IMPLFUNC(DestroyDevice)
 GS_IMPLFUNC(CreateBuffer)
-GS_IMPLFUNC(DeviceCreateSwapchain)
-GS_IMPLFUNC(DeviceCreateCommandList)
-GS_IMPLFUNC(DeviceExecuteCommandList)
+GS_IMPLFUNC(CreateSwapchain)
+GS_IMPLFUNC(CreateCommandList)
+GS_IMPLFUNC(ExecuteCommandList)
 GS_IMPLFUNC(DestroySwapchain)
-GS_IMPLFUNC(SwapchainGetNextTexture)
+GS_IMPLFUNC(GetNextSwapchainTexture)
 GS_IMPLFUNC(SwapchainPresent)
 GS_IMPLFUNC(DestroyCommandList)
 GS_IMPLFUNC(BeginCommandList)
@@ -44,18 +44,18 @@ void gsInit()
     void* handle = open(LIB_NAME);
     GS_LOADFUNC(CreateInstance);
     GS_LOADFUNC(DestroyInstance);
-    GS_LOADFUNC(InstanceGetBackend);
-    GS_LOADFUNC(InstanceEnumerateAdapters);
-    GS_LOADFUNC(InstanceCreateSurface);
-    GS_LOADFUNC(InstanceCreateDevice);
+    GS_LOADFUNC(GetCurrentBackend);
+    GS_LOADFUNC(EnumerateAdapters);
+    GS_LOADFUNC(CreateSurface);
+    GS_LOADFUNC(CreateDevice);
     GS_LOADFUNC(DestroySurface);
     GS_LOADFUNC(DestroyDevice);
     GS_LOADFUNC(CreateBuffer);
-    GS_LOADFUNC(DeviceCreateSwapchain);
-    GS_LOADFUNC(DeviceCreateCommandList);
-    GS_LOADFUNC(DeviceExecuteCommandList);
+    GS_LOADFUNC(CreateSwapchain);
+    GS_LOADFUNC(CreateCommandList);
+    GS_LOADFUNC(ExecuteCommandList);
     GS_LOADFUNC(DestroySwapchain);
-    GS_LOADFUNC(SwapchainGetNextTexture);
+    GS_LOADFUNC(GetNextSwapchainTexture);
     GS_LOADFUNC(SwapchainPresent);
     GS_LOADFUNC(DestroyCommandList);
     GS_LOADFUNC(BeginCommandList);

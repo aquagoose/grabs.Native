@@ -60,8 +60,8 @@ public static unsafe partial class GrabsNative
         instance.Free();
     }
 
-    [UnmanagedCallersOnly(EntryPoint = "gsInstanceGetBackend")]
-    public static Backend InstanceGetBackend(GCHandle instance)
+    [UnmanagedCallersOnly(EntryPoint = "gsGetCurrentBackend")]
+    public static Backend GetCurrentBackend(GCHandle instance)
     {
         Instance gInstance = FromHandle<Instance>(instance);
 
@@ -73,8 +73,8 @@ public static unsafe partial class GrabsNative
         return Backend.Unknown;
     }
 
-    [UnmanagedCallersOnly(EntryPoint = "gsInstanceEnumerateAdapters")]
-    public static Result InstanceEnumerateAdapters(GCHandle instance, uint* numAdapters, Adapter* adapters)
+    [UnmanagedCallersOnly(EntryPoint = "gsEnumerateAdapters")]
+    public static Result EnumerateAdapters(GCHandle instance, uint* numAdapters, Adapter* adapters)
     {
         Instance gInstance = FromHandle<Instance>(instance);
 
@@ -102,8 +102,8 @@ public static unsafe partial class GrabsNative
         return Result.Ok;
     }
     
-    [UnmanagedCallersOnly(EntryPoint = "gsInstanceCreateSurface")]
-    public static Result InstanceCreateSurface(GCHandle instance, SurfaceInfo* info, GCHandle* pSurface)
+    [UnmanagedCallersOnly(EntryPoint = "gsCreateSurface")]
+    public static Result CreateSurface(GCHandle instance, SurfaceInfo* info, GCHandle* pSurface)
     {
         Instance gInstance = FromHandle<Instance>(instance);
 
@@ -120,8 +120,8 @@ public static unsafe partial class GrabsNative
         return Result.Ok;
     }
     
-    [UnmanagedCallersOnly(EntryPoint = "gsInstanceCreateDevice")]
-    public static Result InstanceCreateDevice(GCHandle instance, GCHandle surface, Adapter* adapter, GCHandle* pDevice)
+    [UnmanagedCallersOnly(EntryPoint = "gsCreateDevice")]
+    public static Result CreateDevice(GCHandle instance, GCHandle surface, Adapter* adapter, GCHandle* pDevice)
     {
         Instance gInstance = FromHandle<Instance>(instance);
         Surface gSurface = FromHandle<Surface>(surface);

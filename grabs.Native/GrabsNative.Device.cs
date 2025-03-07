@@ -13,8 +13,8 @@ public static unsafe partial class GrabsNative
         device.Free();
     }
 
-    [UnmanagedCallersOnly(EntryPoint = "gsDeviceCreateSwapchain")]
-    public static Result DeviceCreateSwapchain(GCHandle device, SwapchainInfo* info, GCHandle* pSurface)
+    [UnmanagedCallersOnly(EntryPoint = "gsCreateSwapchain")]
+    public static Result CreateSwapchain(GCHandle device, SwapchainInfo* info, GCHandle* pSurface)
     {
         Device gDevice = FromHandle<Device>(device);
 
@@ -39,8 +39,8 @@ public static unsafe partial class GrabsNative
         return Result.Ok;
     }
 
-    [UnmanagedCallersOnly(EntryPoint = "gsDeviceCreateCommandList")]
-    public static Result DeviceCreateCommandList(GCHandle device, GCHandle* pCommandList)
+    [UnmanagedCallersOnly(EntryPoint = "gsCreateCommandList")]
+    public static Result CreateCommandList(GCHandle device, GCHandle* pCommandList)
     {
         Device gDevice = FromHandle<Device>(device);
 
@@ -73,7 +73,7 @@ public static unsafe partial class GrabsNative
         return Result.Ok;
     }
 
-    [UnmanagedCallersOnly(EntryPoint = "gsDeviceExecuteCommandList")]
+    [UnmanagedCallersOnly(EntryPoint = "gsExecuteCommandList")]
     public static Result DeviceExecuteCommandList(GCHandle device, GCHandle commandList)
     {
         Device gDevice = FromHandle<Device>(device);
