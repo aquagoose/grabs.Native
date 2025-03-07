@@ -139,7 +139,7 @@ int main(int argc, char* argv[])
     GsCommandList cl;
     CHECK_RESULT(gsCreateCommandList(device, &cl));
 
-    float vertices[] =
+    float vertices[]
     {
         -0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
         -0.5f, +0.5f, 0.0f, 0.0f, 0.0f,
@@ -147,7 +147,7 @@ int main(int argc, char* argv[])
         +0.5f, -0.5f, 0.0f, 1.0f, 1.0f
     };
 
-    uint16_t indices[] =
+    uint16_t indices[]
     {
         0, 1, 3,
         1, 2, 3
@@ -157,14 +157,18 @@ int main(int argc, char* argv[])
     {
         .type = GS_BUFFER_TYPE_VERTEX,
         .size = sizeof(vertices),
-        .usage = GS_BUFFER_USAGE_DEFAULT
+        .usage = GS_BUFFER_USAGE_DYNAMIC
     };
 
     GsBuffer vertexBuffer;
     CHECK_RESULT(gsCreateBuffer(device, &bufferInfo, vertices, &vertexBuffer));
 
+    GsMappedData mappedData;
+    CHECK_RESULT(gsMapBuffer(device, vertexBuffer, GS_MAP_MODE_WRITE, &mappedData));
+
     bufferInfo.type = GS_BUFFER_TYPE_INDEX;
     bufferInfo.size = sizeof(indices);
+    bufferInfo.usage = GS_BUFFER_USAGE_DEFAULT;
 
     GsBuffer indexBuffer;
     CHECK_RESULT(gsCreateBuffer(device, &bufferInfo, indices, &indexBuffer));
@@ -214,6 +218,8 @@ int main(int argc, char* argv[])
     gsDestroyShaderModule(pixelModule);
     gsDestroyShaderModule(vertexModule);
 
+    float h = 0;
+
     bool alive = true;
     while (alive)
     {
@@ -234,6 +240,10 @@ int main(int argc, char* argv[])
                 }
             }
         }
+
+        h += 0.05f;
+        vertices[0] = sin(h);
+        memcpy(mappedData.pData, vertices, sizeof(vertices));
 
         GsTexture texture;
         CHECK_RESULT(gsGetNextSwapchainTexture(swapchain, &texture));
@@ -278,6 +288,8 @@ int main(int argc, char* argv[])
         CHECK_RESULT(gsExecuteCommandList(device, cl));
         CHECK_RESULT(gsSwapchainPresent(swapchain));
     }
+
+    gsWaitForIdle(device);
 
     gsDestroyPipeline(pipeline);
     gsDestroyBuffer(indexBuffer);

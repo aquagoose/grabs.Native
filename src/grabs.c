@@ -49,6 +49,9 @@ GS_IMPLFUNC(SetPipeline)
 GS_IMPLFUNC(SetVertexBuffer)
 GS_IMPLFUNC(SetIndexBuffer)
 GS_IMPLFUNC(DrawIndexed)
+GS_IMPLFUNC(WaitForIdle)
+GS_IMPLFUNC(MapBuffer)
+GS_IMPLFUNC(UnmapBuffer)
 
 void gsInit()
 {
@@ -85,6 +88,9 @@ void gsInit()
     GS_LOADFUNC(SetVertexBuffer);
     GS_LOADFUNC(SetIndexBuffer);
     GS_LOADFUNC(DrawIndexed);
+    GS_LOADFUNC(WaitForIdle);
+    GS_LOADFUNC(MapBuffer);
+    GS_LOADFUNC(UnmapBuffer);
 }
 
 const char* gsResultToString(const GsResult result)

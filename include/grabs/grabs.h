@@ -162,6 +162,13 @@ extern "C" {
         GS_SHADER_STAGE_PIXEL
     } GsShaderStage;
 
+    typedef enum
+    {
+        GS_MAP_MODE_WRITE,
+        GS_MAP_MODE_READ,
+        GS_MAP_MODE_READ_AND_WRITE
+    } GsMapMode;
+
     typedef struct
     {
         uint32_t width;
@@ -279,6 +286,11 @@ extern "C" {
         void* pDescriptors;
     } GsPipelineInfo;
 
+    typedef struct
+    {
+        void* pData;
+    } GsMappedData;
+
     extern void gsInit();
     extern const char* gsResultToString(GsResult result);
     extern const char* gsBackendToString(GsBackend backend);
@@ -305,6 +317,9 @@ extern "C" {
     GS_APIFUNC(EnumerateAdapters, GsResult, GsInstance instance, uint32_t *pNumAdapters, GsAdapter *pAdapters)
 
     GS_APIFUNC(ExecuteCommandList, GsResult, GsDevice device, GsCommandList commandList)
+    GS_APIFUNC(WaitForIdle, void, GsDevice device)
+    GS_APIFUNC(MapBuffer, GsResult, GsDevice device, GsBuffer buffer, GsMapMode mode, GsMappedData *pData)
+    GS_APIFUNC(UnmapBuffer, void, GsDevice device, GsBuffer buffer);
 
     GS_APIFUNC(GetNextSwapchainTexture, GsResult, GsSwapchain swapchain, GsTexture *pTexture)
     GS_APIFUNC(SwapchainPresent, GsResult, GsSwapchain swapchain)

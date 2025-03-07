@@ -1,6 +1,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using grabs.Graphics;
+using Buffer = grabs.Graphics.Buffer;
 
 namespace grabs.Native;
 
@@ -138,5 +139,39 @@ public static unsafe partial class GrabsNative
         }
 
         return Result.Ok;
+    }
+
+    [UnmanagedCallersOnly(EntryPoint = "gsMapBuffer")]
+    public static Result MapBuffer(GCHandle device, GCHandle buffer, MapMode mode, MappedData* pData)
+    {
+        Device gDevice = FromHandle<Device>(device);
+        Buffer gBuffer = FromHandle<Buffer>(buffer);
+
+        try
+        {
+            *pData = gDevice.MapResource(gBuffer, mode);
+        }
+        catch (Exception)
+        {
+            return Result.UnknownError;
+        }
+
+        return Result.Ok;
+    }
+
+    [UnmanagedCallersOnly(EntryPoint = "gsUnmapBuffer")]
+    public static void UnmapBuffer(GCHandle device, GCHandle buffer)
+    {
+        Device gDevice = FromHandle<Device>(device);
+        Buffer gBuffer = FromHandle<Buffer>(buffer);
+        
+        gDevice.UnmapResource(gBuffer);
+    }
+
+    [UnmanagedCallersOnly(EntryPoint = "gsWaitForIdle")]
+    public static void WaitForIdle(GCHandle device)
+    {
+        Device gDevice = FromHandle<Device>(device);
+        gDevice.WaitForIdle();
     }
 }
