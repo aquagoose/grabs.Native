@@ -21,6 +21,7 @@ extern "C" {
     typedef void* GsInstance;
     typedef void* GsSurface;
     typedef void* GsDevice;
+    typedef void* GsBuffer;
     typedef void* GsSwapchain;
     typedef void* GsTexture;
     typedef void* GsCommandList;
@@ -118,6 +119,19 @@ extern "C" {
 
     typedef enum
     {
+        GS_BUFFER_TYPE_VERTEX,
+        GS_BUFFER_TYPE_INDEX,
+        GS_BUFFER_TYPE_CONSTANT
+    } GsBufferType;
+
+    typedef enum
+    {
+        GS_BUFFER_USAGE_DEFAULT,
+        GS_BUFFER_USAGE_DYNAMIC
+    } GsBufferUsage;
+
+    typedef enum
+    {
         GS_SURFACE_TYPE_WINDOWS,
         GS_SURFACE_TYPE_XLIB,
         GS_SURFACE_TYPE_XCB,
@@ -200,6 +214,13 @@ extern "C" {
 
     typedef struct
     {
+        GsBufferType type;
+        uint32_t size;
+        GsBufferUsage usage;
+    } GsBufferInfo;
+
+    typedef struct
+    {
         GsTexture texture;
         float clearColor[4];
         GsLoadOp loadOp;
@@ -216,25 +237,27 @@ extern "C" {
     extern const char* gsBackendToString(GsBackend backend);
 
     GS_APIFUNC(CreateInstance, GsResult, GsInstanceInfo *pInfo, GsInstance *pInstance)
+    GS_APIFUNC(InstanceCreateSurface, GsResult, GsInstance instance, GsSurfaceInfo *pInfo, GsSurface *pSurface)
+    GS_APIFUNC(InstanceCreateDevice, GsResult, GsInstance instance, GsSurface surface, GsAdapter *pAdapter, GsDevice *pDevice)
+    GS_APIFUNC(CreateBuffer, GsResult, GsDevice device, GsBufferInfo *pBufferInfo, void* pData, GsBuffer *pBuffer)
+    GS_APIFUNC(DeviceCreateSwapchain, GsResult, GsDevice device, GsSwapchainInfo *pInfo, GsSwapchain *pSwapchain)
+    GS_APIFUNC(DeviceCreateCommandList, GsResult, GsDevice device, GsCommandList *pCommandList)
+
     GS_APIFUNC(DestroyInstance, void, GsInstance instance)
+    GS_APIFUNC(DestroySurface, void, GsSurface surface)
+    GS_APIFUNC(DestroyDevice, void, GsDevice device)
+    GS_APIFUNC(DestroyBuffer, void, GsBuffer buffer)
+    GS_APIFUNC(DestroySwapchain, void, GsSwapchain swapchain)
+    GS_APIFUNC(DestroyCommandList, void, GsCommandList commandList)
 
     GS_APIFUNC(InstanceGetBackend, GsBackend, GsInstance instance)
     GS_APIFUNC(InstanceEnumerateAdapters, GsResult, GsInstance instance, uint32_t *pNumAdapters, GsAdapter *pAdapters)
-    GS_APIFUNC(InstanceCreateSurface, GsResult, GsInstance instance, GsSurfaceInfo *pInfo, GsSurface *pSurface)
-    GS_APIFUNC(InstanceCreateDevice, GsResult, GsInstance instance, GsSurface surface, GsAdapter *pAdapter, GsDevice *pDevice)
 
-    GS_APIFUNC(DestroySurface, void, GsSurface surface)
-
-    GS_APIFUNC(DestroyDevice, void, GsDevice device)
-    GS_APIFUNC(DeviceCreateSwapchain, GsResult, GsDevice device, GsSwapchainInfo *pInfo, GsSwapchain *pSwapchain)
-    GS_APIFUNC(DeviceCreateCommandList, GsResult, GsDevice device, GsCommandList *pCommandList)
     GS_APIFUNC(DeviceExecuteCommandList, GsResult, GsDevice device, GsCommandList commandList)
 
-    GS_APIFUNC(DestroySwapchain, void, GsSwapchain swapchain)
     GS_APIFUNC(SwapchainGetNextTexture, GsResult, GsSwapchain swapchain, GsTexture *pTexture)
     GS_APIFUNC(SwapchainPresent, GsResult, GsSwapchain swapchain)
 
-    GS_APIFUNC(DestroyCommandList, void, GsCommandList commandList)
     GS_APIFUNC(BeginCommandList, GsResult, GsCommandList commandList)
     GS_APIFUNC(EndCommandList, void, GsCommandList commandList)
     GS_APIFUNC(BeginRenderPass, void, GsCommandList commandList, GsRenderPassInfo *info)

@@ -25,6 +25,7 @@ GS_IMPLFUNC(InstanceCreateSurface)
 GS_IMPLFUNC(InstanceCreateDevice)
 GS_IMPLFUNC(DestroySurface)
 GS_IMPLFUNC(DestroyDevice)
+GS_IMPLFUNC(CreateBuffer)
 GS_IMPLFUNC(DeviceCreateSwapchain)
 GS_IMPLFUNC(DeviceCreateCommandList)
 GS_IMPLFUNC(DeviceExecuteCommandList)
@@ -36,6 +37,7 @@ GS_IMPLFUNC(BeginCommandList)
 GS_IMPLFUNC(EndCommandList)
 GS_IMPLFUNC(BeginRenderPass)
 GS_IMPLFUNC(EndRenderPass)
+GS_IMPLFUNC(DestroyBuffer)
 
 void gsInit()
 {
@@ -48,6 +50,7 @@ void gsInit()
     GS_LOADFUNC(InstanceCreateDevice);
     GS_LOADFUNC(DestroySurface);
     GS_LOADFUNC(DestroyDevice);
+    GS_LOADFUNC(CreateBuffer);
     GS_LOADFUNC(DeviceCreateSwapchain);
     GS_LOADFUNC(DeviceCreateCommandList);
     GS_LOADFUNC(DeviceExecuteCommandList);
@@ -59,6 +62,7 @@ void gsInit()
     GS_LOADFUNC(EndCommandList);
     GS_LOADFUNC(BeginRenderPass);
     GS_LOADFUNC(EndRenderPass);
+    GS_LOADFUNC(DestroyBuffer);
 }
 
 const char* gsResultToString(const GsResult result)

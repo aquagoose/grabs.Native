@@ -56,6 +56,23 @@ public static unsafe partial class GrabsNative
         return Result.Ok;
     }
 
+    [UnmanagedCallersOnly(EntryPoint = "gsCreateBuffer")]
+    public static Result CreateBuffer(GCHandle device, BufferInfo* pInfo, void* pData, GCHandle* pBuffer)
+    {
+        Device gDevice = FromHandle<Device>(device);
+
+        try
+        {
+            *pBuffer = ToHandle(gDevice.CreateBuffer(*pInfo, pData));
+        }
+        catch (Exception)
+        {
+            return Result.UnknownError;
+        }
+
+        return Result.Ok;
+    }
+
     [UnmanagedCallersOnly(EntryPoint = "gsDeviceExecuteCommandList")]
     public static Result DeviceExecuteCommandList(GCHandle device, GCHandle commandList)
     {

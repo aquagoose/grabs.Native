@@ -87,6 +87,36 @@ int main(int argc, char* argv[])
     GsDevice device;
     CHECK_RESULT(gsInstanceCreateDevice(instance, surface, nullptr, &device));
 
+    float vertices[] =
+    {
+        -0.5f, -0.5f, 0.0f, 1.0f,
+        -0.5f, +0.5f, 0.0f, 0.0f,
+        +0.5f, +0.5f, 1.0f, 0.0f,
+        +0.5f, -0.5f, 1.0f, 1.0f
+    };
+
+    uint16_t indices[] =
+    {
+        0, 1, 3,
+        1, 2, 3
+    };
+
+    GsBufferInfo bufferInfo
+    {
+        .type = GS_BUFFER_TYPE_VERTEX,
+        .size = sizeof(vertices),
+        .usage = GS_BUFFER_USAGE_DEFAULT
+    };
+
+    GsBuffer vertexBuffer;
+    CHECK_RESULT(gsCreateBuffer(device, &bufferInfo, vertices, &vertexBuffer));
+
+    bufferInfo.type = GS_BUFFER_TYPE_INDEX;
+    bufferInfo.size = sizeof(indices);
+
+    GsBuffer indexBuffer;
+    CHECK_RESULT(gsCreateBuffer(device, &bufferInfo, indices, &indexBuffer));
+
     GsSwapchainInfo swapchainInfo
     {
         .surface = surface,
@@ -151,6 +181,8 @@ int main(int argc, char* argv[])
 
     gsDestroyCommandList(cl);
     gsDestroySwapchain(swapchain);
+    gsDestroyBuffer(indexBuffer);
+    gsDestroyBuffer(vertexBuffer);
     gsDestroyDevice(device);
     gsDestroySurface(surface);
     gsDestroyInstance(instance);
