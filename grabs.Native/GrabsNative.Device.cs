@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using grabs.Graphics;
 
@@ -55,9 +56,27 @@ public static unsafe partial class GrabsNative
 
         return Result.Ok;
     }
-    
-    //[UnmanagedCallersOnly(EntryPoint = "gsCreateShaderModule")]
-    //public static Result CreateShaderModule(GCHandle device, ShaderStage stage, byte* pSpirv, sbyte* entryPoint)
+
+    [UnmanagedCallersOnly(EntryPoint = "gsCreateShaderModule")]
+    public static Result CreateShaderModule(GCHandle device, ShaderStage stage, nuint spirvLength, byte* pSpirv, sbyte* pEntryPoint, GCHandle* pModule)
+    {
+        Device gDevice = FromHandle<Device>(device);
+
+        byte[] spirv = new byte[spirvLength];
+        fixed (byte* pManagedSpirv = spirv)
+            Unsafe.CopyBlock(pManagedSpirv, pSpirv, (uint) spirvLength);
+
+        try
+        {
+            *pModule = ToHandle(gDevice.CreateShaderModule(stage, spirv, new string(pEntryPoint)));
+        }
+        catch (Exception)
+        {
+            return Result.UnknownError;
+        }
+
+        return Result.Ok;
+    }
 
     [UnmanagedCallersOnly(EntryPoint = "gsCreateBuffer")]
     public static Result CreateBuffer(GCHandle device, BufferInfo* pInfo, void* pData, GCHandle* pBuffer)

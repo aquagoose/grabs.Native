@@ -25,6 +25,7 @@ extern "C" {
     typedef void* GsSwapchain;
     typedef void* GsTexture;
     typedef void* GsCommandList;
+    typedef void* GsShaderModule;
 
     typedef enum
     {
@@ -250,6 +251,7 @@ extern "C" {
     GS_APIFUNC(CreateBuffer, GsResult, GsDevice device, GsBufferInfo *pBufferInfo, void* pData, GsBuffer *pBuffer)
     GS_APIFUNC(CreateSwapchain, GsResult, GsDevice device, GsSwapchainInfo *pInfo, GsSwapchain *pSwapchain)
     GS_APIFUNC(CreateCommandList, GsResult, GsDevice device, GsCommandList *pCommandList)
+    GS_APIFUNC(CreateShaderModule, GsResult, GsDevice device, GsShaderStage stage, size_t spirvLength, uint8_t *pSpirv, const char *pEntryPoint, GsShaderModule *pModule)
 
     GS_APIFUNC(DestroyInstance, void, GsInstance instance)
     GS_APIFUNC(DestroySurface, void, GsSurface surface)
@@ -257,6 +259,7 @@ extern "C" {
     GS_APIFUNC(DestroyBuffer, void, GsBuffer buffer)
     GS_APIFUNC(DestroySwapchain, void, GsSwapchain swapchain)
     GS_APIFUNC(DestroyCommandList, void, GsCommandList commandList)
+    GS_APIFUNC(DestroyShaderModule, void, GsShaderModule module)
 
     GS_APIFUNC(GetCurrentBackend, GsBackend, GsInstance instance)
     GS_APIFUNC(EnumerateAdapters, GsResult, GsInstance instance, uint32_t *pNumAdapters, GsAdapter *pAdapters)
@@ -271,7 +274,7 @@ extern "C" {
     GS_APIFUNC(BeginRenderPass, void, GsCommandList commandList, GsRenderPassInfo *info)
     GS_APIFUNC(EndRenderPass, void, GsCommandList commandList)
 
-    GS_APIFUNC(CompileHLSL, GsResult, GsShaderStage stage, const char* pHlsl, const char* pEntryPoint, uint8_t **ppSpirv)
+    GS_APIFUNC(CompileHLSL, GsResult, GsShaderStage stage, const char *pHlsl, const char *pEntryPoint, size_t *pSpirvLength, uint8_t **ppSpirv)
     GS_APIFUNC(FreeCompiledSpirv, void, uint8_t *pSpirv)
 
 #ifdef __cplusplus

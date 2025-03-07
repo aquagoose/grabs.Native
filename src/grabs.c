@@ -40,6 +40,8 @@ GS_IMPLFUNC(EndRenderPass)
 GS_IMPLFUNC(DestroyBuffer)
 GS_IMPLFUNC(CompileHLSL)
 GS_IMPLFUNC(FreeCompiledSpirv)
+GS_IMPLFUNC(CreateShaderModule)
+GS_IMPLFUNC(DestroyShaderModule)
 
 void gsInit()
 {
@@ -67,6 +69,8 @@ void gsInit()
     GS_LOADFUNC(DestroyBuffer);
     GS_LOADFUNC(CompileHLSL);
     GS_LOADFUNC(FreeCompiledSpirv);
+    GS_LOADFUNC(CreateShaderModule);
+    GS_LOADFUNC(DestroyShaderModule);
 }
 
 const char* gsResultToString(const GsResult result)

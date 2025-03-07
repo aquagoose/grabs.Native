@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using grabs.Graphics;
 using grabs.ShaderCompiler;
@@ -6,13 +7,26 @@ namespace grabs.Native;
 
 public static unsafe partial class GrabsNative
 {
+    [UnmanagedCallersOnly(EntryPoint = "gsDestroyShaderModule")]
+    public static void DestroyShaderModule(GCHandle module)
+    {
+        ShaderModule gModule = FromHandle<ShaderModule>(module);
+        gModule.Dispose();
+        module.Free();
+    }
+    
     [UnmanagedCallersOnly(EntryPoint = "gsCompileHLSL")]
-    public static Result CompileHLSL(ShaderStage stage, sbyte* pHlsl, sbyte* pEntryPoint, GCHandle* pSpirv)
+    public static Result CompileHLSL(ShaderStage stage, sbyte* pHlsl, sbyte* pEntryPoint, nuint* pSpirvLength, byte** pSpirv)
     {
         try
         {
             byte[] result = Compiler.CompileHlsl(stage, new string(pHlsl), new string(pEntryPoint));
-            *pSpirv = GCHandle.Alloc(result, GCHandleType.Pinned);
+            *pSpirv = (byte*) NativeMemory.Alloc((nuint) (result.Length * sizeof(byte*)));
+            
+            fixed (void* pResult = result)
+                Unsafe.CopyBlock(*pSpirv, pResult, (uint) result.Length);
+            
+            *pSpirvLength = (nuint) result.Length;
         }
         catch (CompilationException e)
         {
@@ -29,8 +43,8 @@ public static unsafe partial class GrabsNative
     }
 
     [UnmanagedCallersOnly(EntryPoint = "gsFreeCompiledSpirv")]
-    public static void FreeCompiledSpirv(GCHandle spirv)
+    public static void FreeCompiledSpirv(byte* spirv)
     {
-        spirv.Free();
+        NativeMemory.Free(spirv);
     }
 }

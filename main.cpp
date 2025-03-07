@@ -169,13 +169,21 @@ int main(int argc, char* argv[])
     GsBuffer indexBuffer;
     CHECK_RESULT(gsCreateBuffer(device, &bufferInfo, indices, &indexBuffer));
 
+    size_t spirvLength;
     uint8_t* spirv;
 
-    CHECK_RESULT(gsCompileHLSL(GS_SHADER_STAGE_VERTEX, ShaderCode, "VSMain", &spirv));
+    CHECK_RESULT(gsCompileHLSL(GS_SHADER_STAGE_VERTEX, ShaderCode, "VSMain", &spirvLength, &spirv));
+    GsShaderModule vertexModule;
+    CHECK_RESULT(gsCreateShaderModule(device, GS_SHADER_STAGE_VERTEX, spirvLength, spirv, "VSMain", &vertexModule));
     gsFreeCompiledSpirv(spirv);
 
-    CHECK_RESULT(gsCompileHLSL(GS_SHADER_STAGE_PIXEL, ShaderCode, "PSMain", &spirv));
+    CHECK_RESULT(gsCompileHLSL(GS_SHADER_STAGE_PIXEL, ShaderCode, "PSMain", &spirvLength, &spirv));
+    GsShaderModule pixelModule;
+    CHECK_RESULT(gsCreateShaderModule(device, GS_SHADER_STAGE_PIXEL, spirvLength, spirv, "PSMain", &pixelModule));
     gsFreeCompiledSpirv(spirv);
+
+    gsDestroyShaderModule(pixelModule);
+    gsDestroyShaderModule(vertexModule);
 
     bool alive = true;
     while (alive)
