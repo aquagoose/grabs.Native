@@ -55,6 +55,9 @@ public static unsafe partial class GrabsNative
 
         return Result.Ok;
     }
+    
+    //[UnmanagedCallersOnly(EntryPoint = "gsCreateShaderModule")]
+    //public static Result CreateShaderModule(GCHandle device, ShaderStage stage, byte* pSpirv, sbyte* entryPoint)
 
     [UnmanagedCallersOnly(EntryPoint = "gsCreateBuffer")]
     public static Result CreateBuffer(GCHandle device, BufferInfo* pInfo, void* pData, GCHandle* pBuffer)

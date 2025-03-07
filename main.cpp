@@ -14,6 +14,44 @@
         throw std::runtime_error("grabs operation failed: " + std::string(gsResultToString(res)));\
 }
 
+const char* ShaderCode = R"(
+struct VSInput
+{
+    float3 Position: POSITION0;
+    float2 TexCoord: TEXCOORD0;
+};
+
+struct VSOutput
+{
+    float4 Position: SV_Position;
+    float2 TexCoord: TEXCOORD0;
+};
+
+struct PSOutput
+{
+    float4 Color: SV_Target0;
+};
+
+VSOutput VSMain(const in VSInput input)
+{
+    VSOutput output;
+
+    output.Position = float4(input.Position, 1.0);
+    output.TexCoord = input.TexCoord;
+
+    return output;
+}
+
+PSOutput PSMain(const in VSOutput input)
+{
+    PSOutput output;
+
+    output.Color = float4(input.TexCoord, 0.0, 1.0);
+
+    return output;
+}
+)";
+
 int main(int argc, char* argv[])
 {
     gsInit();
@@ -87,12 +125,26 @@ int main(int argc, char* argv[])
     GsDevice device;
     CHECK_RESULT(gsCreateDevice(instance, surface, nullptr, &device));
 
+    GsSwapchainInfo swapchainInfo
+    {
+        .surface = surface,
+        .size = { 800, 600 },
+        .format = GS_FORMAT_B8G8R8A8_UNORM,
+        .presentMode = GS_PRESENT_MODE_FIFO,
+        .numBuffers = 2
+    };
+    GsSwapchain swapchain;
+    CHECK_RESULT(gsCreateSwapchain(device, &swapchainInfo, &swapchain));
+
+    GsCommandList cl;
+    CHECK_RESULT(gsCreateCommandList(device, &cl));
+
     float vertices[] =
     {
-        -0.5f, -0.5f, 0.0f, 1.0f,
-        -0.5f, +0.5f, 0.0f, 0.0f,
-        +0.5f, +0.5f, 1.0f, 0.0f,
-        +0.5f, -0.5f, 1.0f, 1.0f
+        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
+        -0.5f, +0.5f, 0.0f, 0.0f, 0.0f,
+        +0.5f, +0.5f, 0.0f, 1.0f, 0.0f,
+        +0.5f, -0.5f, 0.0f, 1.0f, 1.0f
     };
 
     uint16_t indices[] =
@@ -117,19 +169,13 @@ int main(int argc, char* argv[])
     GsBuffer indexBuffer;
     CHECK_RESULT(gsCreateBuffer(device, &bufferInfo, indices, &indexBuffer));
 
-    GsSwapchainInfo swapchainInfo
-    {
-        .surface = surface,
-        .size = { 800, 600 },
-        .format = GS_FORMAT_B8G8R8A8_UNORM,
-        .presentMode = GS_PRESENT_MODE_FIFO,
-        .numBuffers = 2
-    };
-    GsSwapchain swapchain;
-    CHECK_RESULT(gsCreateSwapchain(device, &swapchainInfo, &swapchain));
+    uint8_t* spirv;
 
-    GsCommandList cl;
-    CHECK_RESULT(gsCreateCommandList(device, &cl));
+    CHECK_RESULT(gsCompileHLSL(GS_SHADER_STAGE_VERTEX, ShaderCode, "VSMain", &spirv));
+    gsFreeCompiledSpirv(spirv);
+
+    CHECK_RESULT(gsCompileHLSL(GS_SHADER_STAGE_PIXEL, ShaderCode, "PSMain", &spirv));
+    gsFreeCompiledSpirv(spirv);
 
     bool alive = true;
     while (alive)
@@ -179,10 +225,10 @@ int main(int argc, char* argv[])
         CHECK_RESULT(gsSwapchainPresent(swapchain));
     }
 
-    gsDestroyCommandList(cl);
-    gsDestroySwapchain(swapchain);
     gsDestroyBuffer(indexBuffer);
     gsDestroyBuffer(vertexBuffer);
+    gsDestroyCommandList(cl);
+    gsDestroySwapchain(swapchain);
     gsDestroyDevice(device);
     gsDestroySurface(surface);
     gsDestroyInstance(instance);

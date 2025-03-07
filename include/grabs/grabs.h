@@ -32,7 +32,8 @@ extern "C" {
         GS_RESULT_UNKNOWN_ERROR,
         GS_RESULT_NO_BACKENDS,
         GS_RESULT_DEBUG_LAYERS_NOT_FOUND,
-        GS_RESULT_FAILED_TO_PRESENT
+        GS_RESULT_FAILED_TO_PRESENT,
+        GS_RESULT_SHADER_COMPILATION_FAILED
     } GsResult;
 
     typedef enum
@@ -152,6 +153,13 @@ extern "C" {
         GS_LOAD_OP_LOAD
     } GsLoadOp;
 
+    typedef enum
+    {
+        GS_SHADER_STAGE_NONE = 0,
+        GS_SHADER_STAGE_VERTEX,
+        GS_SHADER_STAGE_PIXEL
+    } GsShaderStage;
+
     typedef struct
     {
         uint32_t width;
@@ -262,6 +270,9 @@ extern "C" {
     GS_APIFUNC(EndCommandList, void, GsCommandList commandList)
     GS_APIFUNC(BeginRenderPass, void, GsCommandList commandList, GsRenderPassInfo *info)
     GS_APIFUNC(EndRenderPass, void, GsCommandList commandList)
+
+    GS_APIFUNC(CompileHLSL, GsResult, GsShaderStage stage, const char* pHlsl, const char* pEntryPoint, uint8_t **ppSpirv)
+    GS_APIFUNC(FreeCompiledSpirv, void, uint8_t *pSpirv)
 
 #ifdef __cplusplus
 }

@@ -38,6 +38,8 @@ GS_IMPLFUNC(EndCommandList)
 GS_IMPLFUNC(BeginRenderPass)
 GS_IMPLFUNC(EndRenderPass)
 GS_IMPLFUNC(DestroyBuffer)
+GS_IMPLFUNC(CompileHLSL)
+GS_IMPLFUNC(FreeCompiledSpirv)
 
 void gsInit()
 {
@@ -63,6 +65,8 @@ void gsInit()
     GS_LOADFUNC(BeginRenderPass);
     GS_LOADFUNC(EndRenderPass);
     GS_LOADFUNC(DestroyBuffer);
+    GS_LOADFUNC(CompileHLSL);
+    GS_LOADFUNC(FreeCompiledSpirv);
 }
 
 const char* gsResultToString(const GsResult result)
@@ -76,6 +80,7 @@ const char* gsResultToString(const GsResult result)
         STR(NO_BACKENDS)
         STR(DEBUG_LAYERS_NOT_FOUND)
         STR(FAILED_TO_PRESENT)
+        STR(SHADER_COMPILATION_FAILED)
 
         default:
             return "UNKNOWN";

@@ -4,7 +4,7 @@ using Buffer = grabs.Graphics.Buffer;
 
 namespace grabs.Native;
 
-public unsafe partial class GrabsNative
+public static unsafe partial class GrabsNative
 {
     [UnmanagedCallersOnly(EntryPoint = "gsDestroyBuffer")]
     public static void DestroyBuffer(GCHandle buffer)

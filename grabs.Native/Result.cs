@@ -5,8 +5,8 @@ public enum Result
     Ok,
     
     UnknownError,
-    InvalidHandle,
     NoBackends,
     DebugLayersNotFound,
-    FailedToPresent
+    FailedToPresent,
+    ShaderCompilationFailed
 }
