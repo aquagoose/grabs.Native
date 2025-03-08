@@ -314,7 +314,7 @@ int main(int argc, char* argv[])
         GsColorAttachmentInfo colorAttachment
         {
             .texture = swapchainTexture,
-            .clearColor = { 1.0f, 0.5f, 0.25f, 1.0f },
+            .clearColor = { 0.25f, 0.5f, 1.0f, 1.0f },
             .loadOp = GS_LOAD_OP_CLEAR
         };
 
