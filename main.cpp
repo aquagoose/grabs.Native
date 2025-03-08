@@ -32,11 +32,16 @@ struct PSOutput
     float4 Color: SV_Target0;
 };
 
+cbuffer Matrices : register(b0)
+{
+    float4x4 Matrix;
+}
+
 VSOutput VSMain(const in VSInput input)
 {
     VSOutput output;
 
-    output.Position = float4(input.Position, 1.0);
+    output.Position = mul(Matrix, float4(input.Position, 1.0));
     output.TexCoord = input.TexCoord;
 
     return output;
@@ -153,25 +158,53 @@ int main(int argc, char* argv[])
         1, 2, 3
     };
 
+    float matrix[][4]
+    {
+        { 1.0f, 0.0f, 0.0f, 0.0f },
+        { 0.0f, 1.0f, 0.0f, 0.0f, },
+        { 0.0f, 0.0f, 1.0f, 0.0f, },
+        { 0.0f, 0.0f, 0.0f, 1.0f }
+    };
+
     GsBufferInfo bufferInfo
     {
         .type = GS_BUFFER_TYPE_VERTEX,
         .size = sizeof(vertices),
-        .usage = GS_BUFFER_USAGE_DYNAMIC
+        .usage = GS_BUFFER_USAGE_DEFAULT
     };
 
     GsBuffer vertexBuffer;
     CHECK_RESULT(gsCreateBuffer(device, &bufferInfo, vertices, &vertexBuffer));
 
-    GsMappedData mappedData;
-    CHECK_RESULT(gsMapBuffer(device, vertexBuffer, GS_MAP_MODE_WRITE, &mappedData));
-
     bufferInfo.type = GS_BUFFER_TYPE_INDEX;
     bufferInfo.size = sizeof(indices);
-    bufferInfo.usage = GS_BUFFER_USAGE_DEFAULT;
 
     GsBuffer indexBuffer;
     CHECK_RESULT(gsCreateBuffer(device, &bufferInfo, indices, &indexBuffer));
+
+    bufferInfo.type = GS_BUFFER_TYPE_CONSTANT;
+    bufferInfo.size = sizeof(matrix);
+    bufferInfo.usage = GS_BUFFER_USAGE_DYNAMIC;
+
+    GsBuffer constantBuffer;
+    CHECK_RESULT(gsCreateBuffer(device, &bufferInfo, matrix, &constantBuffer));
+
+    GsMappedData mappedData;
+    CHECK_RESULT(gsMapBuffer(device, constantBuffer, GS_MAP_MODE_WRITE, &mappedData));
+
+    GsDescriptorBinding bindings[]
+    {
+        { .binding = 0, .type = GS_DESCRIPTOR_TYPE_CONSTANT_BUFFER, .stages = GS_SHADER_STAGE_VERTEX }
+    };
+
+    GsDescriptorLayoutInfo layoutInfo
+    {
+        .numBindings = 1,
+        .pBindings = bindings
+    };
+
+    GsDescriptorLayout layout;
+    CHECK_RESULT(gsCreateDescriptorLayout(device, &layoutInfo, &layout));
 
     size_t spirvLength;
     uint8_t* spirv;
@@ -210,6 +243,8 @@ int main(int argc, char* argv[])
         .pVertexBuffers = &vertexBufferInfo,
         .numInputElements = 2,
         .pInputLayout = inputLayout,
+        .numDescriptors = 1,
+        .pDescriptors = &layout
     };
 
     GsPipeline pipeline;
@@ -242,8 +277,8 @@ int main(int argc, char* argv[])
         }
 
         h += 0.05f;
-        vertices[0] = sin(h);
-        memcpy(mappedData.pData, vertices, sizeof(vertices));
+        matrix[3][0] = sin(h);
+        memcpy(mappedData.pData, matrix, sizeof(matrix));
 
         GsTexture texture;
         CHECK_RESULT(gsGetNextSwapchainTexture(swapchain, &texture));
@@ -276,6 +311,12 @@ int main(int argc, char* argv[])
         };
         gsSetViewport(cl, &viewport);
 
+        GsDescriptor descriptors[]
+        {
+            { .slot = 0, .type = GS_DESCRIPTOR_TYPE_CONSTANT_BUFFER, .buffer = constantBuffer }
+        };
+        gsPushDescriptors(cl, 0, pipeline, 1, descriptors);
+
         gsSetPipeline(cl, pipeline);
         gsSetVertexBuffer(cl, 0, vertexBuffer, 0);
         gsSetIndexBuffer(cl, indexBuffer, GS_FORMAT_R16_UINT, 0);
@@ -292,6 +333,8 @@ int main(int argc, char* argv[])
     gsWaitForIdle(device);
 
     gsDestroyPipeline(pipeline);
+    gsDestroyDescriptorLayout(layout);
+    gsDestroyBuffer(constantBuffer);
     gsDestroyBuffer(indexBuffer);
     gsDestroyBuffer(vertexBuffer);
     gsDestroyCommandList(cl);

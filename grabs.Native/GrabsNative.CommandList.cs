@@ -111,6 +111,34 @@ public static unsafe partial class GrabsNative
         gList.SetIndexBuffer(gBuffer, format, offset);
     }
 
+    [UnmanagedCallersOnly(EntryPoint = "gsPushDescriptors")]
+    public static void PushDescriptors(GCHandle commandList, uint slot, GCHandle pipeline, uint numDescriptors,
+        Descriptor* pDescriptors)
+    {
+        CommandList gList = FromHandle<CommandList>(commandList);
+        Pipeline gPipeline = FromHandle<Pipeline>(pipeline);
+
+        Graphics.Descriptor[] descriptors = new Graphics.Descriptor[numDescriptors];
+        for (int i = 0; i < numDescriptors; i++)
+        {
+            Descriptor* descriptor = &pDescriptors[i];
+
+            descriptors[i] = new Graphics.Descriptor()
+            {
+                Slot = descriptor->Slot,
+                Type = descriptor->Type,
+                Buffer = GCHandle.ToIntPtr(descriptor->Buffer) == IntPtr.Zero
+                    ? null
+                    : FromHandle<Buffer>(descriptor->Buffer),
+                Texture = GCHandle.ToIntPtr(descriptor->Texture) == IntPtr.Zero
+                    ? null
+                    : FromHandle<Texture>(descriptor->Texture)
+            };
+        }
+        
+        gList.PushDescriptors(slot, gPipeline, descriptors);
+    }
+
     [UnmanagedCallersOnly(EntryPoint = "gsDrawIndexed")]
     public static void DrawIndexed(GCHandle commandList, uint numIndices)
     {

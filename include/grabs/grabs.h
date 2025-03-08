@@ -27,6 +27,7 @@ extern "C" {
     typedef void* GsCommandList;
     typedef void* GsShaderModule;
     typedef void* GsPipeline;
+    typedef void* GsDescriptorLayout;
 
     typedef enum
     {
@@ -169,6 +170,12 @@ extern "C" {
         GS_MAP_MODE_READ_AND_WRITE
     } GsMapMode;
 
+    typedef enum
+    {
+        GS_DESCRIPTOR_TYPE_CONSTANT_BUFFER,
+        GS_DESCRIPTOR_TYPE_TEXTURE
+    } GsDescriptorType;
+
     typedef struct
     {
         uint32_t width;
@@ -283,13 +290,34 @@ extern "C" {
         uint32_t numInputElements;
         GsInputElement* pInputLayout;
         uint32_t numDescriptors;
-        void* pDescriptors;
+        GsDescriptorLayout* pDescriptors;
     } GsPipelineInfo;
 
     typedef struct
     {
         void* pData;
     } GsMappedData;
+
+    typedef struct
+    {
+        uint32_t binding;
+        GsDescriptorType type;
+        GsShaderStage stages;
+    } GsDescriptorBinding;
+
+    typedef struct
+    {
+        uint32_t numBindings;
+        GsDescriptorBinding* pBindings;
+    } GsDescriptorLayoutInfo;
+
+    typedef struct
+    {
+        uint32_t slot;
+        GsDescriptorType type;
+        GsBuffer buffer;
+        GsTexture texture;
+    } GsDescriptor;
 
     extern void gsInit();
     extern const char* gsResultToString(GsResult result);
@@ -303,6 +331,7 @@ extern "C" {
     GS_APIFUNC(CreateCommandList, GsResult, GsDevice device, GsCommandList *pCommandList)
     GS_APIFUNC(CreateShaderModule, GsResult, GsDevice device, GsShaderStage stage, size_t spirvLength, uint8_t *pSpirv, const char *pEntryPoint, GsShaderModule *pModule)
     GS_APIFUNC(CreatePipeline, GsResult, GsDevice device, GsPipelineInfo *pInfo, GsPipeline *pPipeline)
+    GS_APIFUNC(CreateDescriptorLayout, GsResult, GsDevice device, GsDescriptorLayoutInfo *pInfo, GsDescriptorLayout *pLayout)
 
     GS_APIFUNC(DestroyInstance, void, GsInstance instance)
     GS_APIFUNC(DestroySurface, void, GsSurface surface)
@@ -312,6 +341,7 @@ extern "C" {
     GS_APIFUNC(DestroyCommandList, void, GsCommandList commandList)
     GS_APIFUNC(DestroyShaderModule, void, GsShaderModule module)
     GS_APIFUNC(DestroyPipeline, void, GsPipeline pipeline)
+    GS_APIFUNC(DestroyDescriptorLayout, void, GsDescriptorLayout layout)
 
     GS_APIFUNC(GetCurrentBackend, GsBackend, GsInstance instance)
     GS_APIFUNC(EnumerateAdapters, GsResult, GsInstance instance, uint32_t *pNumAdapters, GsAdapter *pAdapters)
@@ -332,6 +362,7 @@ extern "C" {
     GS_APIFUNC(SetPipeline, void, GsCommandList commandList, GsPipeline pipeline)
     GS_APIFUNC(SetVertexBuffer, void, GsCommandList commandList, uint32_t slot, GsBuffer buffer, uint32_t offset)
     GS_APIFUNC(SetIndexBuffer, void, GsCommandList commandList, GsBuffer buffer, GsFormat format, uint32_t offset)
+    GS_APIFUNC(PushDescriptors, void, GsCommandList commandList, uint32_t slot, GsPipeline pipeline, uint32_t numDescriptors, GsDescriptor *pDescriptors)
     GS_APIFUNC(DrawIndexed, void, GsCommandList commandList, uint32_t numIndices)
 
     GS_APIFUNC(CompileHLSL, GsResult, GsShaderStage stage, const char *pHlsl, const char *pEntryPoint, size_t *pSpirvLength, uint8_t **ppSpirv)

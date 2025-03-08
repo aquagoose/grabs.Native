@@ -100,6 +100,10 @@ public static unsafe partial class GrabsNative
     public static Result CreatePipeline(GCHandle device, PipelineInfo* pInfo, GCHandle* pPipeline)
     {
         Device gDevice = FromHandle<Device>(device);
+
+        DescriptorLayout[] layouts = new DescriptorLayout[pInfo->NumDescriptors];
+        for (int i = 0; i < pInfo->NumDescriptors; i++)
+            layouts[i] = FromHandle<DescriptorLayout>(pInfo->Descriptors[i]);
         
         Graphics.PipelineInfo info = new Graphics.PipelineInfo()
         {
@@ -108,12 +112,35 @@ public static unsafe partial class GrabsNative
             ColorAttachmentFormats =
                 new ReadOnlySpan<Format>(pInfo->ColorAttachmentFormats, (int) pInfo->NumColorAttachmentFormats),
             VertexBuffers = new ReadOnlySpan<VertexBufferInfo>(pInfo->VertexBuffers, (int) pInfo->NumVertexBuffers),
-            InputLayout = new ReadOnlySpan<InputElement>(pInfo->InputLayout, (int) pInfo->NumInputElements)
+            InputLayout = new ReadOnlySpan<InputElement>(pInfo->InputLayout, (int) pInfo->NumInputElements),
+            Descriptors = layouts
         };
 
         try
         {
             *pPipeline = ToHandle(gDevice.CreatePipeline(in info));
+        }
+        catch (Exception)
+        {
+            return Result.UnknownError;
+        }
+
+        return Result.Ok;
+    }
+
+    [UnmanagedCallersOnly(EntryPoint = "gsCreateDescriptorLayout")]
+    public static Result CreateDescriptorLayout(GCHandle device, DescriptorLayoutInfo* pInfo, GCHandle* pLayout)
+    {
+        Device gDevice = FromHandle<Device>(device);
+
+        Graphics.DescriptorLayoutInfo info = new()
+        {
+            Bindings = new ReadOnlySpan<DescriptorBinding>(pInfo->Bindings, (int) pInfo->NumBindings)
+        };
+
+        try
+        {
+            *pLayout = ToHandle(gDevice.CreateDescriptorLayout(in info));
         }
         catch (Exception)
         {

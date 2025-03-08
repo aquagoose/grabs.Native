@@ -52,6 +52,9 @@ GS_IMPLFUNC(DrawIndexed)
 GS_IMPLFUNC(WaitForIdle)
 GS_IMPLFUNC(MapBuffer)
 GS_IMPLFUNC(UnmapBuffer)
+GS_IMPLFUNC(CreateDescriptorLayout)
+GS_IMPLFUNC(DestroyDescriptorLayout)
+GS_IMPLFUNC(PushDescriptors)
 
 void gsInit()
 {
@@ -91,6 +94,9 @@ void gsInit()
     GS_LOADFUNC(WaitForIdle);
     GS_LOADFUNC(MapBuffer);
     GS_LOADFUNC(UnmapBuffer);
+    GS_LOADFUNC(CreateDescriptorLayout);
+    GS_LOADFUNC(DestroyDescriptorLayout);
+    GS_LOADFUNC(PushDescriptors);
 }
 
 const char* gsResultToString(const GsResult result)
