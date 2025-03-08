@@ -136,6 +136,19 @@ extern "C" {
 
     typedef enum
     {
+        GS_TEXTURE_TYPE_1D,
+        GS_TEXTURE_TYPE_2D,
+        GS_TEXTURE_TYPE_3D
+    } GsTextureType;
+
+    typedef enum
+    {
+        GS_TEXTURE_USAGE_NONE = 0,
+        GS_TEXTURE_USAGE_SAMPLED = 1 << 0
+    } GsTextureUsage;
+
+    typedef enum
+    {
         GS_SURFACE_TYPE_WINDOWS,
         GS_SURFACE_TYPE_XLIB,
         GS_SURFACE_TYPE_XCB,
@@ -181,6 +194,13 @@ extern "C" {
         uint32_t width;
         uint32_t height;
     } GsSize2D;
+
+    typedef struct
+    {
+        uint32_t width;
+        uint32_t height;
+        uint32_t depth;
+    } GsSize3D;
 
     typedef struct
     {
@@ -242,6 +262,14 @@ extern "C" {
         uint32_t size;
         GsBufferUsage usage;
     } GsBufferInfo;
+
+    typedef struct
+    {
+        GsTextureType type;
+        GsSize3D size;
+        GsFormat format;
+        GsTextureUsage usage;
+    } GsTextureInfo;
 
     typedef struct
     {
@@ -327,6 +355,7 @@ extern "C" {
     GS_APIFUNC(CreateSurface, GsResult, GsInstance instance, GsSurfaceInfo *pInfo, GsSurface *pSurface)
     GS_APIFUNC(CreateDevice, GsResult, GsInstance instance, GsSurface surface, GsAdapter *pAdapter, GsDevice *pDevice)
     GS_APIFUNC(CreateBuffer, GsResult, GsDevice device, GsBufferInfo *pBufferInfo, void* pData, GsBuffer *pBuffer)
+    GS_APIFUNC(CreateTexture, GsResult, GsDevice device, GsTextureInfo *pInfo, void *pData, GsTexture *pTexture);
     GS_APIFUNC(CreateSwapchain, GsResult, GsDevice device, GsSwapchainInfo *pInfo, GsSwapchain *pSwapchain)
     GS_APIFUNC(CreateCommandList, GsResult, GsDevice device, GsCommandList *pCommandList)
     GS_APIFUNC(CreateShaderModule, GsResult, GsDevice device, GsShaderStage stage, size_t spirvLength, uint8_t *pSpirv, const char *pEntryPoint, GsShaderModule *pModule)
@@ -337,6 +366,7 @@ extern "C" {
     GS_APIFUNC(DestroySurface, void, GsSurface surface)
     GS_APIFUNC(DestroyDevice, void, GsDevice device)
     GS_APIFUNC(DestroyBuffer, void, GsBuffer buffer)
+    GS_APIFUNC(DestroyTexture, void, GsTexture texture)
     GS_APIFUNC(DestroySwapchain, void, GsSwapchain swapchain)
     GS_APIFUNC(DestroyCommandList, void, GsCommandList commandList)
     GS_APIFUNC(DestroyShaderModule, void, GsShaderModule module)

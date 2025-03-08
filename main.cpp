@@ -5,6 +5,8 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 
 #include "grabs/grabs.h"
 
@@ -37,6 +39,9 @@ cbuffer Matrices : register(b0)
     float4x4 Matrix;
 }
 
+Texture2D Texture : register(t1);
+SamplerState State : register(s1);
+
 VSOutput VSMain(const in VSInput input)
 {
     VSOutput output;
@@ -51,7 +56,7 @@ PSOutput PSMain(const in VSOutput input)
 {
     PSOutput output;
 
-    output.Color = float4(input.TexCoord, 0.0, 1.0);
+    output.Color = Texture.Sample(State, input.TexCoord);
 
     return output;
 }
@@ -67,7 +72,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    SDL_Window* window = SDL_CreateWindow("Native GRABS test in C/++!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, 0);
+    SDL_Window* window = SDL_CreateWindow("grabs.Native", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, 0);
     if (!window)
     {
         std::cout << "Failed to create window: " << SDL_GetError() << std::endl;
@@ -192,14 +197,31 @@ int main(int argc, char* argv[])
     GsMappedData mappedData;
     CHECK_RESULT(gsMapBuffer(device, constantBuffer, GS_MAP_MODE_WRITE, &mappedData));
 
+    int texW, texH;
+    void* texData = stbi_load("/home/aqua/Pictures/BAGELMIP.png", &texW, &texH, nullptr, 4);
+
+    GsTextureInfo texInfo
+    {
+        .type = GS_TEXTURE_TYPE_2D,
+        .size = { static_cast<uint32_t>(texW), static_cast<uint32_t>(texH), 1 },
+        .format = GS_FORMAT_R8G8B8A8_UNORM,
+        .usage = GS_TEXTURE_USAGE_SAMPLED
+    };
+
+    GsTexture texture;
+    gsCreateTexture(device, &texInfo, texData, &texture);
+
+    stbi_image_free(texData);
+
     GsDescriptorBinding bindings[]
     {
-        { .binding = 0, .type = GS_DESCRIPTOR_TYPE_CONSTANT_BUFFER, .stages = GS_SHADER_STAGE_VERTEX }
+        { .binding = 0, .type = GS_DESCRIPTOR_TYPE_CONSTANT_BUFFER, .stages = GS_SHADER_STAGE_VERTEX },
+        { .binding = 1, .type = GS_DESCRIPTOR_TYPE_TEXTURE, .stages = GS_SHADER_STAGE_PIXEL }
     };
 
     GsDescriptorLayoutInfo layoutInfo
     {
-        .numBindings = 1,
+        .numBindings = 2,
         .pBindings = bindings
     };
 
@@ -276,6 +298,7 @@ int main(int argc, char* argv[])
             }
         }
 
+        // Z-Rotation matrix
         h += 0.05f;
         matrix[0][0] = cos(h);
         matrix[1][0] = -sin(h);
@@ -283,14 +306,14 @@ int main(int argc, char* argv[])
         matrix[1][1] = cos(h);
         memcpy(mappedData.pData, matrix, sizeof(matrix));
 
-        GsTexture texture;
-        CHECK_RESULT(gsGetNextSwapchainTexture(swapchain, &texture));
+        GsTexture swapchainTexture;
+        CHECK_RESULT(gsGetNextSwapchainTexture(swapchain, &swapchainTexture));
 
         CHECK_RESULT(gsBeginCommandList(cl));
 
         GsColorAttachmentInfo colorAttachment
         {
-            .texture = texture,
+            .texture = swapchainTexture,
             .clearColor = { 1.0f, 0.5f, 0.25f, 1.0f },
             .loadOp = GS_LOAD_OP_CLEAR
         };
@@ -316,9 +339,10 @@ int main(int argc, char* argv[])
 
         GsDescriptor descriptors[]
         {
-            { .slot = 0, .type = GS_DESCRIPTOR_TYPE_CONSTANT_BUFFER, .buffer = constantBuffer }
+            { .slot = 0, .type = GS_DESCRIPTOR_TYPE_CONSTANT_BUFFER, .buffer = constantBuffer },
+            { .slot = 1, .type = GS_DESCRIPTOR_TYPE_TEXTURE, .texture = texture }
         };
-        gsPushDescriptors(cl, 0, pipeline, 1, descriptors);
+        gsPushDescriptors(cl, 0, pipeline, 2, descriptors);
 
         gsSetPipeline(cl, pipeline);
         gsSetVertexBuffer(cl, 0, vertexBuffer, 0);
@@ -334,9 +358,11 @@ int main(int argc, char* argv[])
     }
 
     gsWaitForIdle(device);
+    gsUnmapBuffer(device, constantBuffer);
 
     gsDestroyPipeline(pipeline);
     gsDestroyDescriptorLayout(layout);
+    gsDestroyTexture(texture);
     gsDestroyBuffer(constantBuffer);
     gsDestroyBuffer(indexBuffer);
     gsDestroyBuffer(vertexBuffer);

@@ -55,6 +55,8 @@ GS_IMPLFUNC(UnmapBuffer)
 GS_IMPLFUNC(CreateDescriptorLayout)
 GS_IMPLFUNC(DestroyDescriptorLayout)
 GS_IMPLFUNC(PushDescriptors)
+GS_IMPLFUNC(CreateTexture)
+GS_IMPLFUNC(DestroyTexture)
 
 void gsInit()
 {
@@ -97,6 +99,8 @@ void gsInit()
     GS_LOADFUNC(CreateDescriptorLayout);
     GS_LOADFUNC(DestroyDescriptorLayout);
     GS_LOADFUNC(PushDescriptors);
+    GS_LOADFUNC(CreateTexture);
+    GS_LOADFUNC(DestroyTexture);
 }
 
 const char* gsResultToString(const GsResult result)

@@ -96,6 +96,23 @@ public static unsafe partial class GrabsNative
         return Result.Ok;
     }
 
+    [UnmanagedCallersOnly(EntryPoint = "gsCreateTexture")]
+    public static Result CreateTexture(GCHandle device, TextureInfo* pInfo, void* pData, GCHandle* pTexture)
+    {
+        Device gDevice = FromHandle<Device>(device);
+
+        try
+        {
+            *pTexture = ToHandle(gDevice.CreateTexture(*pInfo, pData));
+        }
+        catch (Exception)
+        {
+            return Result.UnknownError;
+        }
+
+        return Result.Ok;
+    }
+
     [UnmanagedCallersOnly(EntryPoint = "gsCreatePipeline")]
     public static Result CreatePipeline(GCHandle device, PipelineInfo* pInfo, GCHandle* pPipeline)
     {
