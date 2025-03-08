@@ -18,9 +18,15 @@ else()
     set(GRABS_RUNTIME_NAME "linux-x64")
 endif()
 
+if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+    set(GRABS_BUILD_CONFIG "Debug")
+else()
+    set(GRABS_BUILD_CONFIG "Release")
+endif()
+
 add_custom_command(
         TARGET grabs PRE_BUILD
-        COMMAND dotnet publish -c Release -r ${GRABS_RUNTIME_NAME} "${CMAKE_CURRENT_SOURCE_DIR}/grabs.Native/grabs.Native.csproj" -o ${CMAKE_CURRENT_SOURCE_DIR}/grabs.Native/bin/Release/net9.0/publish
+        COMMAND dotnet publish -c ${GRABS_BUILD_CONFIG} -r ${GRABS_RUNTIME_NAME} "${CMAKE_CURRENT_SOURCE_DIR}/grabs.Native/grabs.Native.csproj" -o ${CMAKE_CURRENT_SOURCE_DIR}/grabs.Native/bin/Release/net9.0/publish
         VERBATIM
 )
 

@@ -277,7 +277,10 @@ int main(int argc, char* argv[])
         }
 
         h += 0.05f;
-        matrix[3][0] = sin(h);
+        matrix[0][0] = cos(h);
+        matrix[1][0] = -sin(h);
+        matrix[0][1] = sin(h);
+        matrix[1][1] = cos(h);
         memcpy(mappedData.pData, matrix, sizeof(matrix));
 
         GsTexture texture;
